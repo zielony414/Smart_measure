@@ -15,6 +15,9 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QTabWidget" name="tabWidget">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>-4</x>
@@ -33,7 +36,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>3</number>
+     <number>0</number>
     </property>
     <property name="elideMode">
      <enum>Qt::ElideNone</enum>
@@ -193,7 +196,7 @@
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
-     <widget class="QLabel" name="refresh_inf_lbl">
+     <widget class="QLabel" name="refresh_dev_lbl">
       <property name="geometry">
        <rect>
         <x>100</x>
@@ -206,7 +209,7 @@
        <string>If theres no devices in list, click refresh</string>
       </property>
      </widget>
-     <widget class="QLabel" name="label_21">
+     <widget class="QLabel" name="steps_lbl">
       <property name="geometry">
        <rect>
         <x>260</x>
@@ -224,7 +227,7 @@
        <string>Number of steps:</string>
       </property>
      </widget>
-     <widget class="QSpinBox" name="spinBox_2">
+     <widget class="QSpinBox" name="steps_spb">
       <property name="geometry">
        <rect>
         <x>390</x>
@@ -245,7 +248,7 @@
        <number>15</number>
       </property>
      </widget>
-     <widget class="QLabel" name="label_22">
+     <widget class="QLabel" name="timePS_lbl">
       <property name="geometry">
        <rect>
         <x>230</x>
@@ -263,7 +266,7 @@
        <string>Time per step:             hours,             minutes</string>
       </property>
      </widget>
-     <widget class="QSpinBox" name="spinBox_4">
+     <widget class="QSpinBox" name="timePS_hour_spb">
       <property name="geometry">
        <rect>
         <x>340</x>
@@ -284,7 +287,7 @@
        <number>9999</number>
       </property>
      </widget>
-     <widget class="QSpinBox" name="spinBox_5">
+     <widget class="QSpinBox" name="timePS_min_spb">
       <property name="geometry">
        <rect>
         <x>450</x>
@@ -308,7 +311,7 @@
        <number>0</number>
       </property>
      </widget>
-     <widget class="QDoubleSpinBox" name="doubleSpinBox_3">
+     <widget class="QDoubleSpinBox" name="freq_spb">
       <property name="geometry">
        <rect>
         <x>460</x>
@@ -357,14 +360,14 @@
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="amp_and_volt_config">
+    <widget class="QWidget" name="amp_and_volt_conf">
      <property name="enabled">
       <bool>true</bool>
      </property>
      <attribute name="title">
       <string>Ammeter and voltmeter</string>
      </attribute>
-     <widget class="QLabel" name="label">
+     <widget class="QLabel" name="amp_inlet_lbl">
       <property name="geometry">
        <rect>
         <x>30</x>
@@ -382,7 +385,7 @@
        <string>Ammeter for inlet current:</string>
       </property>
      </widget>
-     <widget class="QLabel" name="label_2">
+     <widget class="QLabel" name="volt_inlet_lbl">
       <property name="geometry">
        <rect>
         <x>30</x>
@@ -400,7 +403,7 @@
        <string>Voltmeter for inlet current:</string>
       </property>
      </widget>
-     <widget class="QLabel" name="label_3">
+     <widget class="QLabel" name="amp_outlet_lbl">
       <property name="geometry">
        <rect>
         <x>20</x>
@@ -418,7 +421,7 @@
        <string>Ammeter for outlet current:</string>
       </property>
      </widget>
-     <widget class="QLabel" name="label_4">
+     <widget class="QLabel" name="volt_outlet_lbl">
       <property name="geometry">
        <rect>
         <x>20</x>
@@ -436,7 +439,7 @@
        <string>Voltmeter for outlet current:</string>
       </property>
      </widget>
-     <widget class="QComboBox" name="comboBox">
+     <widget class="QComboBox" name="amp_inlet_combo">
       <property name="geometry">
        <rect>
         <x>190</x>
@@ -461,7 +464,7 @@
        </property>
       </item>
      </widget>
-     <widget class="QComboBox" name="comboBox_2">
+     <widget class="QComboBox" name="amp_outlet_combo">
       <property name="geometry">
        <rect>
         <x>190</x>
@@ -486,7 +489,7 @@
        </property>
       </item>
      </widget>
-     <widget class="QComboBox" name="comboBox_3">
+     <widget class="QComboBox" name="volt_outlet_combo">
       <property name="geometry">
        <rect>
         <x>190</x>
@@ -516,7 +519,7 @@
        </property>
       </item>
      </widget>
-     <widget class="QComboBox" name="comboBox_4">
+     <widget class="QComboBox" name="volt_inlet_combo">
       <property name="geometry">
        <rect>
         <x>190</x>
@@ -546,7 +549,7 @@
        </property>
       </item>
      </widget>
-     <widget class="QPushButton" name="config_dev_3">
+     <widget class="QPushButton" name="next_pg1_btn">
       <property name="geometry">
        <rect>
         <x>660</x>
@@ -559,7 +562,7 @@
        <string>Next page</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="config_dev_4">
+     <widget class="QPushButton" name="next_step1_btn">
       <property name="geometry">
        <rect>
         <x>530</x>
@@ -572,7 +575,7 @@
        <string>Next step</string>
       </property>
      </widget>
-     <widget class="QLabel" name="label_9">
+     <widget class="QLabel" name="step_num1_lbl">
       <property name="geometry">
        <rect>
         <x>240</x>
@@ -590,7 +593,7 @@
        <string>Step number: </string>
       </property>
      </widget>
-     <widget class="QComboBox" name="comboBox_7">
+     <widget class="QComboBox" name="step_num1_combo">
       <property name="geometry">
        <rect>
         <x>340</x>
@@ -754,7 +757,7 @@
         <height>151</height>
        </rect>
       </property>
-      <widget class="QLabel" name="label_8">
+      <widget class="QLabel" name="PSU_watts_lbl">
        <property name="geometry">
         <rect>
          <x>30</x>
@@ -772,7 +775,7 @@
         <string>Watts: 0 W</string>
        </property>
       </widget>
-      <widget class="QLabel" name="label_7">
+      <widget class="QLabel" name="PSU_amp_lbl">
        <property name="geometry">
         <rect>
          <x>20</x>
@@ -790,7 +793,7 @@
         <string>Ampers:</string>
        </property>
       </widget>
-      <widget class="QComboBox" name="comboBox_6">
+      <widget class="QComboBox" name="PSU_volt_unit_combo">
        <property name="geometry">
         <rect>
          <x>140</x>
@@ -820,7 +823,7 @@
         </property>
        </item>
       </widget>
-      <widget class="QLabel" name="label_5">
+      <widget class="QLabel" name="PSU_main_lbl">
        <property name="geometry">
         <rect>
          <x>90</x>
@@ -838,7 +841,7 @@
         <string>Power Supply</string>
        </property>
       </widget>
-      <widget class="QDoubleSpinBox" name="doubleSpinBox_4">
+      <widget class="QDoubleSpinBox" name="PSU_amp_pwr_spb">
        <property name="geometry">
         <rect>
          <x>80</x>
@@ -865,7 +868,7 @@
         <string/>
        </property>
       </widget>
-      <widget class="QComboBox" name="comboBox_5">
+      <widget class="QComboBox" name="PSU_amp_unit_combo">
        <property name="geometry">
         <rect>
          <x>140</x>
@@ -890,7 +893,7 @@
         </property>
        </item>
       </widget>
-      <widget class="QDoubleSpinBox" name="doubleSpinBox_2">
+      <widget class="QDoubleSpinBox" name="PSU_volt_pwr_spb">
        <property name="geometry">
         <rect>
          <x>80</x>
@@ -917,7 +920,7 @@
         <string/>
        </property>
       </widget>
-      <widget class="QLabel" name="label_6">
+      <widget class="QLabel" name="PSU_volt_lbl">
        <property name="geometry">
         <rect>
          <x>40</x>
@@ -936,7 +939,7 @@
        </property>
       </widget>
      </widget>
-     <widget class="QWidget" name="PSU_widg_2" native="true">
+     <widget class="QWidget" name="DCload_widg" native="true">
       <property name="geometry">
        <rect>
         <x>30</x>
@@ -945,7 +948,7 @@
         <height>151</height>
        </rect>
       </property>
-      <widget class="QLabel" name="label_14">
+      <widget class="QLabel" name="DCload_watts_lbl">
        <property name="geometry">
         <rect>
          <x>30</x>
@@ -963,7 +966,7 @@
         <string>Watts: 0 W</string>
        </property>
       </widget>
-      <widget class="QLabel" name="label_15">
+      <widget class="QLabel" name="DCload_amp_lbl">
        <property name="geometry">
         <rect>
          <x>20</x>
@@ -981,7 +984,7 @@
         <string>Ampers:</string>
        </property>
       </widget>
-      <widget class="QComboBox" name="comboBox_10">
+      <widget class="QComboBox" name="DCload_volt_unit_combo">
        <property name="geometry">
         <rect>
          <x>140</x>
@@ -1011,7 +1014,7 @@
         </property>
        </item>
       </widget>
-      <widget class="QLabel" name="label_16">
+      <widget class="QLabel" name="DCload_main_lbl">
        <property name="geometry">
         <rect>
          <x>90</x>
@@ -1029,7 +1032,7 @@
         <string>DC load</string>
        </property>
       </widget>
-      <widget class="QDoubleSpinBox" name="doubleSpinBox_7">
+      <widget class="QDoubleSpinBox" name="DCload_amp_load_spb">
        <property name="geometry">
         <rect>
          <x>80</x>
@@ -1056,7 +1059,7 @@
         <string/>
        </property>
       </widget>
-      <widget class="QComboBox" name="comboBox_11">
+      <widget class="QComboBox" name="DCload_amp_unit_combo">
        <property name="geometry">
         <rect>
          <x>140</x>
@@ -1081,7 +1084,7 @@
         </property>
        </item>
       </widget>
-      <widget class="QDoubleSpinBox" name="doubleSpinBox_10">
+      <widget class="QDoubleSpinBox" name="DCload_volt_load_spb">
        <property name="geometry">
         <rect>
          <x>80</x>
@@ -1108,7 +1111,7 @@
         <string/>
        </property>
       </widget>
-      <widget class="QLabel" name="label_23">
+      <widget class="QLabel" name="DCload_volt_lbl">
        <property name="geometry">
         <rect>
          <x>40</x>
@@ -1128,11 +1131,14 @@
       </widget>
      </widget>
     </widget>
-    <widget class="QWidget" name="tab_5">
+    <widget class="QWidget" name="temp_chamber_conf">
      <attribute name="title">
       <string>Temperature chamber</string>
      </attribute>
-     <widget class="QLabel" name="label_17">
+     <widget class="QLabel" name="step_num2_lbl">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>300</x>
@@ -1150,7 +1156,10 @@
        <string>Step number: </string>
       </property>
      </widget>
-     <widget class="QComboBox" name="comboBox_12">
+     <widget class="QComboBox" name="step_num2_combo">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>400</x>
@@ -1305,7 +1314,10 @@
        </item>
       </layout>
      </widget>
-     <widget class="QRadioButton" name="radioButton">
+     <widget class="QRadioButton" name="set_temp_radio">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>80</x>
@@ -1317,8 +1329,14 @@
       <property name="text">
        <string>Set temp</string>
       </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
      </widget>
-     <widget class="QRadioButton" name="radioButton_2">
+     <widget class="QRadioButton" name="set_gradient_radio">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>340</x>
@@ -1331,7 +1349,10 @@
        <string>Gradient</string>
       </property>
      </widget>
-     <widget class="QLabel" name="label_18">
+     <widget class="QLabel" name="set_temp_lbl">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>20</x>
@@ -1352,12 +1373,15 @@
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
-     <widget class="QDoubleSpinBox" name="doubleSpinBox_8">
+     <widget class="QDoubleSpinBox" name="set_temp_spb">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>110</x>
         <y>140</y>
-        <width>81</width>
+        <width>111</width>
         <height>31</height>
        </rect>
       </property>
@@ -1385,10 +1409,16 @@
        <double>185.000000000000000</double>
       </property>
       <property name="singleStep">
-       <double>0.010000000000000</double>
+       <double>0.100000000000000</double>
+      </property>
+      <property name="value">
+       <double>20.000000000000000</double>
       </property>
      </widget>
-     <widget class="QLabel" name="label_20">
+     <widget class="QLabel" name="gr_temp_step_lbl">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>240</x>
@@ -1409,7 +1439,10 @@
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
-     <widget class="QDoubleSpinBox" name="doubleSpinBox_11">
+     <widget class="QDoubleSpinBox" name="gr_temp_step_spb">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>360</x>
@@ -1442,10 +1475,16 @@
        <double>185.000000000000000</double>
       </property>
       <property name="singleStep">
-       <double>0.010000000000000</double>
+       <double>0.100000000000000</double>
+      </property>
+      <property name="value">
+       <double>1.000000000000000</double>
       </property>
      </widget>
-     <widget class="QLabel" name="label_24">
+     <widget class="QLabel" name="set_humidity_lbl">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>20</x>
@@ -1466,12 +1505,15 @@
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
-     <widget class="QDoubleSpinBox" name="doubleSpinBox_12">
+     <widget class="QDoubleSpinBox" name="set_humidity_spb">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>110</x>
         <y>180</y>
-        <width>81</width>
+        <width>111</width>
         <height>31</height>
        </rect>
       </property>
@@ -1499,10 +1541,16 @@
        <double>98.000000000000000</double>
       </property>
       <property name="singleStep">
-       <double>0.010000000000000</double>
+       <double>0.100000000000000</double>
+      </property>
+      <property name="value">
+       <double>40.000000000000000</double>
       </property>
      </widget>
-     <widget class="QDoubleSpinBox" name="doubleSpinBox_13">
+     <widget class="QDoubleSpinBox" name="gr_humidity_step_spb">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>360</x>
@@ -1535,10 +1583,16 @@
        <double>98.000000000000000</double>
       </property>
       <property name="singleStep">
-       <double>0.010000000000000</double>
+       <double>0.100000000000000</double>
+      </property>
+      <property name="value">
+       <double>1.000000000000000</double>
       </property>
      </widget>
-     <widget class="QLabel" name="label_26">
+     <widget class="QLabel" name="gr_humidity_step_lbl">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>260</x>
@@ -1559,7 +1613,7 @@
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
-     <widget class="QPushButton" name="config_dev_7">
+     <widget class="QPushButton" name="next_pg2_btn">
       <property name="geometry">
        <rect>
         <x>640</x>
@@ -1572,7 +1626,7 @@
        <string>Next page</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="config_dev_8">
+     <widget class="QPushButton" name="next_step_btn">
       <property name="geometry">
        <rect>
         <x>640</x>
@@ -1585,7 +1639,7 @@
        <string>Next step</string>
       </property>
      </widget>
-     <widget class="Line" name="line">
+     <widget class="Line" name="line1">
       <property name="geometry">
        <rect>
         <x>220</x>
@@ -1598,7 +1652,10 @@
        <enum>Qt::Vertical</enum>
       </property>
      </widget>
-     <widget class="QLabel" name="label_19">
+     <widget class="QLabel" name="gr_temp_step_info_lbl">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>490</x>
@@ -1616,7 +1673,10 @@
        <string>Exp. temp. change in step: + 12 °C</string>
       </property>
      </widget>
-     <widget class="QLabel" name="label_25">
+     <widget class="QLabel" name="gr_humidity_step_info_lbl">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>490</x>
@@ -1634,7 +1694,10 @@
        <string>Exp.humid. change in step: 0  %rH</string>
       </property>
      </widget>
-     <widget class="QLabel" name="label_59">
+     <widget class="QLabel" name="gr_temp_lbl">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>230</x>
@@ -1655,12 +1718,15 @@
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
-     <widget class="QDoubleSpinBox" name="doubleSpinBox_9">
+     <widget class="QDoubleSpinBox" name="gr_temp_spb">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>360</x>
         <y>130</y>
-        <width>81</width>
+        <width>121</width>
         <height>31</height>
        </rect>
       </property>
@@ -1685,18 +1751,24 @@
        <double>-75.000000000000000</double>
       </property>
       <property name="maximum">
-       <double>185.000000000000000</double>
+       <double>175.000000000000000</double>
       </property>
       <property name="singleStep">
-       <double>0.010000000000000</double>
+       <double>0.100000000000000</double>
+      </property>
+      <property name="value">
+       <double>20.000000000000000</double>
       </property>
      </widget>
-     <widget class="QDoubleSpinBox" name="doubleSpinBox_14">
+     <widget class="QDoubleSpinBox" name="gr_humidity_spb">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>360</x>
         <y>210</y>
-        <width>81</width>
+        <width>121</width>
         <height>31</height>
        </rect>
       </property>
@@ -1724,10 +1796,16 @@
        <double>98.000000000000000</double>
       </property>
       <property name="singleStep">
-       <double>0.010000000000000</double>
+       <double>0.100000000000000</double>
+      </property>
+      <property name="value">
+       <double>40.000000000000000</double>
       </property>
      </widget>
-     <widget class="QLabel" name="label_60">
+     <widget class="QLabel" name="gr_humidity_lbl">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>240</x>
@@ -1748,7 +1826,7 @@
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_5">
+     <widget class="QCheckBox" name="use_temp_chamber_chkbox">
       <property name="geometry">
        <rect>
         <x>20</x>
@@ -1768,7 +1846,7 @@
        <string>Use temperature chamber</string>
       </property>
      </widget>
-     <widget class="Line" name="line_3">
+     <widget class="Line" name="line2">
       <property name="geometry">
        <rect>
         <x>-3</x>
@@ -1781,7 +1859,7 @@
        <enum>Qt::Horizontal</enum>
       </property>
      </widget>
-     <widget class="Line" name="line_4">
+     <widget class="Line" name="line3">
       <property name="geometry">
        <rect>
         <x>-10</x>
@@ -1794,7 +1872,10 @@
        <enum>Qt::Horizontal</enum>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_6">
+     <widget class="QCheckBox" name="use_allowable_temp_err_chkbox">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -1812,7 +1893,10 @@
        <string>Collect data only when [set temp] - [real temp] &lt; [allowable temp error]</string>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_7">
+     <widget class="QCheckBox" name="use_allowable_humidity_err_chkbox">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -1830,7 +1914,10 @@
        <string>Collect data only when [set humidity] - [real humidity] &lt; [allowable humidity error]</string>
       </property>
      </widget>
-     <widget class="QLabel" name="label_61">
+     <widget class="QLabel" name="allowable_temp_err_lbl">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>520</x>
@@ -1851,7 +1938,10 @@
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
-     <widget class="QDoubleSpinBox" name="doubleSpinBox_26">
+     <widget class="QDoubleSpinBox" name="allowable_temp_err_spb">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>700</x>
@@ -1878,16 +1968,19 @@
        <string> °C</string>
       </property>
       <property name="minimum">
-       <double>-75.000000000000000</double>
+       <double>0.000000000000000</double>
       </property>
       <property name="maximum">
-       <double>185.000000000000000</double>
+       <double>70.000000000000000</double>
       </property>
       <property name="singleStep">
-       <double>0.010000000000000</double>
+       <double>0.100000000000000</double>
+      </property>
+      <property name="value">
+       <double>1.000000000000000</double>
       </property>
      </widget>
-     <widget class="Line" name="line_5">
+     <widget class="Line" name="line4">
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -1900,7 +1993,10 @@
        <enum>Qt::Horizontal</enum>
       </property>
      </widget>
-     <widget class="QLabel" name="label_62">
+     <widget class="QLabel" name="allowable_humidity_err_lbl">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>520</x>
@@ -1921,7 +2017,10 @@
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
-     <widget class="QDoubleSpinBox" name="doubleSpinBox_27">
+     <widget class="QDoubleSpinBox" name="allowable_humidity_err_spb">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>700</x>
@@ -1951,18 +2050,21 @@
        <double>0.000000000000000</double>
       </property>
       <property name="maximum">
-       <double>98.000000000000000</double>
+       <double>40.000000000000000</double>
       </property>
       <property name="singleStep">
-       <double>0.010000000000000</double>
+       <double>0.100000000000000</double>
+      </property>
+      <property name="value">
+       <double>1.000000000000000</double>
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="tab_3">
+    <widget class="QWidget" name="export_settings">
      <attribute name="title">
       <string>Export settings</string>
      </attribute>
-     <widget class="QLabel" name="label_27">
+     <widget class="QLabel" name="test_name">
       <property name="geometry">
        <rect>
         <x>100</x>
@@ -1977,13 +2079,13 @@
        </font>
       </property>
       <property name="text">
-       <string>Test title:</string>
+       <string>Test name:</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
-     <widget class="QLineEdit" name="lineEdit">
+     <widget class="QLineEdit" name="test_name_ledit">
       <property name="geometry">
        <rect>
         <x>190</x>
@@ -2004,7 +2106,7 @@
        <string>Device test 1</string>
       </property>
      </widget>
-     <widget class="QLabel" name="label_28">
+     <widget class="QLabel" name="raport_path_lbl">
       <property name="geometry">
        <rect>
         <x>110</x>
@@ -2025,7 +2127,7 @@
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
-     <widget class="QToolButton" name="toolButton">
+     <widget class="QToolButton" name="browse_path_toolbtn">
       <property name="geometry">
        <rect>
         <x>460</x>
@@ -2038,7 +2140,7 @@
        <string>...</string>
       </property>
      </widget>
-     <widget class="QLineEdit" name="lineEdit_2">
+     <widget class="QLineEdit" name="save_path_ledit">
       <property name="geometry">
        <rect>
         <x>280</x>
@@ -2059,7 +2161,7 @@
        <string/>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox">
+     <widget class="QCheckBox" name="generate_raport_chkbox">
       <property name="geometry">
        <rect>
         <x>120</x>
@@ -2076,11 +2178,14 @@
       <property name="text">
        <string>Generate excel raport</string>
       </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
       <property name="tristate">
        <bool>false</bool>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_2">
+     <widget class="QCheckBox" name="delete_txt_chkbox">
       <property name="geometry">
        <rect>
         <x>110</x>
@@ -2104,7 +2209,7 @@
        <bool>false</bool>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton">
+     <widget class="QPushButton" name="start_test_btn">
       <property name="geometry">
        <rect>
         <x>330</x>
@@ -2117,7 +2222,7 @@
        <string>Start testing</string>
       </property>
      </widget>
-     <widget class="QLabel" name="label_29">
+     <widget class="QLabel" name="state_lbl">
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -2138,7 +2243,7 @@
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
-     <widget class="QLabel" name="label_30">
+     <widget class="QLabel" name="elapsed_time_lbl">
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -2159,7 +2264,7 @@
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
-     <widget class="QLabel" name="label_31">
+     <widget class="QLabel" name="estimated_time_lbl">
       <property name="geometry">
        <rect>
         <x>0</x>
