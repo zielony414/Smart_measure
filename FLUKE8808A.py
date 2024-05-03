@@ -30,10 +30,13 @@ class Fluke_8808A:
         time.sleep(1)
         self.instr.write("PRINT 1\n") # BARDZO WAŻNE również funkcja szybkości przesyłania, patrz tabelka w dokumentacji
         time.sleep(1)
+        self.instr.write("AUTO\n")
+        time.sleep(1)
 
     '''Główna metoda startujaca pomiary'''
     async def start_measure(self, duration, gather_freq):
         start_time = time.time()
+        self.instr.clear()
 
         while time.time() - start_time < duration:
 
@@ -49,8 +52,8 @@ class Fluke_8808A:
             print(string)
             #file.write(string)
             
-            #time.sleep(gather_freq)
-            await asyncio.sleep(gather_freq)
+            time.sleep(gather_freq)
+            #await asyncio.sleep(gather_freq)
         return 1
 
     '''Metoda resetuje urzadzenie pomiarowe'''
@@ -87,7 +90,11 @@ class Fluke_8808A:
 # except Exception as err:
 #     print(f"ERROR_CONNECTED Unexpected {err=}, {type(err)=}")
 
-# #stm.configure()
+# stm.configure()
+
+# print(stm.it_is())
+
+
 # try:
 #     stm.start_measure(5, 0.5)
 # except Exception as err:
