@@ -22,3 +22,13 @@ class BKprecision8601:
     def power_on(self):
         self.instr.write("OUTP ON\n")
         time.sleep(1)
+
+    """Metoda wyłączająca zasilanie"""
+    def power_off(self):
+        self.instr.write("OUTP OFF\n")
+        time.sleep(1)
+
+    """Metoda resetująca urządzenie"""
+    def reset(self):
+        self.instr.write("*RST\n")
+        time.sleep(1)
