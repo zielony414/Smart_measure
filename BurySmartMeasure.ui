@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>600</height>
+    <height>611</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -36,7 +36,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <property name="elideMode">
      <enum>Qt::ElideNone</enum>
@@ -251,9 +251,9 @@
      <widget class="QLabel" name="timePS_lbl">
       <property name="geometry">
        <rect>
-        <x>230</x>
+        <x>220</x>
         <y>380</y>
-        <width>361</width>
+        <width>371</width>
         <height>31</height>
        </rect>
       </property>
@@ -263,15 +263,15 @@
        </font>
       </property>
       <property name="text">
-       <string>Time per step:             hours,             minutes</string>
+       <string>Time per step:               minutes,              seconds</string>
       </property>
      </widget>
-     <widget class="QSpinBox" name="timePS_hour_spb">
+     <widget class="QSpinBox" name="timePS_min_spb">
       <property name="geometry">
        <rect>
-        <x>340</x>
+        <x>330</x>
         <y>380</y>
-        <width>51</width>
+        <width>61</width>
         <height>31</height>
        </rect>
       </property>
@@ -286,11 +286,20 @@
       <property name="maximum">
        <number>9999</number>
       </property>
+      <property name="stepType">
+       <enum>QAbstractSpinBox::DefaultStepType</enum>
+      </property>
+      <property name="value">
+       <number>2</number>
+      </property>
+      <property name="displayIntegerBase">
+       <number>10</number>
+      </property>
      </widget>
-     <widget class="QSpinBox" name="timePS_min_spb">
+     <widget class="QSpinBox" name="timePS_sec_spb">
       <property name="geometry">
        <rect>
-        <x>450</x>
+        <x>470</x>
         <y>380</y>
         <width>51</width>
         <height>31</height>
@@ -305,7 +314,7 @@
        <number>0</number>
       </property>
       <property name="maximum">
-       <number>99999</number>
+       <number>59</number>
       </property>
       <property name="value">
        <number>0</number>
@@ -336,6 +345,18 @@
       </property>
       <property name="suffix">
        <string> s</string>
+      </property>
+      <property name="minimum">
+       <double>0.010000000000000</double>
+      </property>
+      <property name="maximum">
+       <double>99.000000000000000</double>
+      </property>
+      <property name="singleStep">
+       <double>0.500000000000000</double>
+      </property>
+      <property name="value">
+       <double>2.010000000000000</double>
       </property>
      </widget>
      <widget class="QLabel" name="freq_lbl">
@@ -772,7 +793,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Watts: 0 W</string>
+        <string>Watts: 0.0 W</string>
        </property>
       </widget>
       <widget class="QLabel" name="PSU_amp_lbl">
@@ -963,7 +984,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Watts: 0 W</string>
+        <string>Watts: 0.0 W</string>
        </property>
       </widget>
       <widget class="QLabel" name="DCload_amp_lbl">
@@ -1670,7 +1691,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Exp. temp. change in step: + 12 °C</string>
+       <string>Exp. temp. change in step: + 2 °C</string>
       </property>
      </widget>
      <widget class="QLabel" name="gr_humidity_step_info_lbl">
@@ -1691,7 +1712,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Exp.humid. change in step: 0  %rH</string>
+       <string>Exp.humid. change in step: 2  %rH</string>
       </property>
      </widget>
      <widget class="QLabel" name="gr_temp_lbl">
