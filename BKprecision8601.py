@@ -61,6 +61,22 @@ class BKprecision8601:
             print("Błąd odczytu trybu pracy: ", e)
         return answer
 
+    """Metoda zmieniająca ustawienia w czasie"""
+    async def set_change(self, current_value, step, mode, duration, step_freq):
+        start_time = time.time()
+        while time.time() - start_time < duration:
+            if mode == "VOLT":
+                self.instr.write("VOLT " + str(current_value) + "\n")
+            elif mode == "CURR":
+                self.instr.write("CURR " + str(current_value) + "\n")
+            elif mode == "POW":
+                self.instr.write("POW " + str(current_value) + "\n")
+            time.sleep(1)
+            current_value = current_value + step
+            await time.sleep(step_freq)
+
+
+
     """Metoda włączająca zasilanie"""
     def power_on(self):
         self.instr.write("OUTP ON\n")
