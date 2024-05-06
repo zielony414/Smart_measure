@@ -22,11 +22,11 @@ class BKprecision8601:
         return answer
 
     """Metoda ustawiająca natężenie"""
-    def set_current(self, voltage, current):
+    def set_current(self, current):
         self.instr.write("CURR " + str(current) + "\n")  # ustawienie natężenia
         time.sleep(1)
 
-    """Metoda ustawiająca moc wyjściową"""
+    """Metoda ustawiająca moc"""
     def set_power(self, power):
         self.instr.write("POW " + str(power) + "\n")
         time.sleep(1)
@@ -35,6 +35,31 @@ class BKprecision8601:
     def set_voltage(self, voltage):
         self.instr.write("VOLT " + str(voltage) + "\n")
         time.sleep(1)
+
+    """Metoda odczytująca natężenie napiecie i moc"""
+    def read(self):
+        answer = ""
+        try:
+            answer = self.instr.query("CURR?\n")
+            answer += self.instr.query("VOLT?\n")
+            answer += self.instr.query("POW?\n")
+        except pyvisa.Error as e:
+            print("Błąd odczytu wartości: ", e)
+        return answer
+
+    """Metoda ustawiająca tryb pracy"""
+    def set_mode(self, mode):
+        self.instr.write("FUNC " + mode + "\n")
+        time.sleep(1)
+
+    """Metoda odczytująca tryb pracy"""
+    def read_mode(self):
+        answer = ""
+        try:
+            answer = self.instr.query("FUNC?\n")
+        except pyvisa.Error as e:
+            print("Błąd odczytu trybu pracy: ", e)
+        return answer
 
     """Metoda włączająca zasilanie"""
     def power_on(self):
