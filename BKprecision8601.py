@@ -5,11 +5,20 @@ import time
 class BKprecision8601:
     """Inicjalizacja połączenia z urządzeniem"""
     def __init__(self, port):
-        self.instr = pyvisa.ResourceManager().open_resource(port)
+        try:
+            self.instr = pyvisa.ResourceManager().open_resource(port)
+        except pyvisa.Error as e:
+            print("Błąd inicjalizacji urządzenia: ", e)
 
     """Metoda zwracająca nazwę urządzenia"""
     def it_is(self):
-        return self.instr.query("*IDN?\n")
+        answer = ""
+        self.instr.clear()
+        try:
+            answer = self.instr.query("*IDN?\n")
+        except pyvisa.Error as e:
+            print("Błąd odczytu nazwy urządzenia: ", e)
+        return answer
 
     """Metoda ustawiająca napięcie i natężenie"""
     def set_voltage_current(self, voltage, current):

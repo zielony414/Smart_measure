@@ -1,12 +1,16 @@
 import sys
+import pyvisa
 from PyQt5 import QtWidgets, QtCore
 from BurySmartMeasure import Ui_BurySmartMeasureClass
+import BKprecision8601
+import FLUKE8808A
 
 steps_number = 1    # number of all steps
 step = 1            # number of selected step
 freq = 1.0          # data gathering frequency
 time_per_step = 120  # time per step in seconds
 steps_list = ()
+rm = pyvisa.ResourceManager()
 # TODO add list of data
 
 
@@ -40,8 +44,24 @@ def initial_ui_config():
 # TODO Scanning for new devices
 def refresh_devices():
     # Add scanning devices code
-    ui.state_lbl.setText("test")
+    adress = rm.list_resources()
+    list = []
+    for i in adress:
+        if i[:4] == "ASRL":
+            # Próba połączenia z Multimetrem i zasilaczem
+            Multimeter = FLUKE8808A.Fluke_8808A(i, 19200)
+            name = Multimeter.it_is()
+            list.append((i, name))
 
+        elif i[:3] == "USB":
+            # Próba połączenia z DCLoad
+            DCLoad = BKprecision8601.BKprecision8601(i)
+            name = DCLoad.it_is()
+            list.append((i, name))
+
+        else: k = 2
+
+    return list
 
 # Switching to next tab
 def next_page():
