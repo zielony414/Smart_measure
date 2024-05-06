@@ -43,25 +43,53 @@ def initial_ui_config():
 
 # TODO Scanning for new devices
 def refresh_devices():
-    # Add scanning devices code
-    adress = rm.list_resources()
-    list = []
+    try:
+        # Add scanning devices code
+        adress = rm.list_resources()
+        list = []
+        adress = adress[::-1]
+
+        for i in adress:
+            print(i)
+            if i[:4] == "ASRL":
+                # Próba połączenia z Multimetrem i zasilaczem
+                Multimeter = FLUKE8808A.Fluke_8808A(i, 19200)
+                Multimeter.configure()
+                name = Multimeter.it_is()
+                print(name)
+                list.append((i, name))
+
+            elif i[:3] == "USB":
+                # Próba połączenia z DCLoad
+                DCLoad = BKprecision8601.BKprecision8601(i)
+                name = DCLoad.it_is()
+                list.append((i, name))
+
+        print(list)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+    #ui.refresh_dev_lbl.setText("Devices found: "+str(len(list)))
+
+    #return list
+    """
     for i in adress:
-        if i[:4] == "ASRL":
-            # Próba połączenia z Multimetrem i zasilaczem
-            Multimeter = FLUKE8808A.Fluke_8808A(i, 19200)
-            name = Multimeter.it_is()
-            list.append((i, name))
+        try:
+            print(i)
+            instr = rm.open_resource(i)
+        except pyvisa.Error as e:
+            print("Błąd inicjalizacji urządzenia: ", e)
 
-        elif i[:3] == "USB":
-            # Próba połączenia z DCLoad
-            DCLoad = BKprecision8601.BKprecision8601(i)
-            name = DCLoad.it_is()
-            list.append((i, name))
+        try:
+            answer = ""
+            instr.clear()
+            
+            answer = instr.query("*IDN?")
+            print(answer)
+        except pyvisa.Error as e:
+            print("Błąd odczytu nazwy urządzenia: ", e)
 
-        else: k = 2
-
-    return list
+    """
 
 # Switching to next tab
 def next_page():
@@ -250,6 +278,7 @@ def watts_calc():
     ui.DCload_watts_lbl.setText("Watts: "+str(round(DCload_amp*DCload_volts, 5))+" W")
 
 if __name__ == "__main__":
+
     app = QtWidgets.QApplication(sys.argv)
     BurySmartMeasureClass = QtWidgets.QMainWindow()
     ui = Ui_BurySmartMeasureClass()

@@ -1,6 +1,7 @@
 import pyvisa
 import time
 
+"""sterowanie prądem i mocą"""
 
 class BKprecision8601:
     """Inicjalizacja połączenia z urządzeniem"""
@@ -15,16 +16,24 @@ class BKprecision8601:
         answer = ""
         self.instr.clear()
         try:
-            answer = self.instr.query("*IDN?\n")
+            answer = self.instr.query("*IDN?")
         except pyvisa.Error as e:
             print("Błąd odczytu nazwy urządzenia: ", e)
         return answer
 
-    """Metoda ustawiająca napięcie i natężenie"""
-    def set_voltage_current(self, voltage, current):
-        self.instr.write("VOLT " + str(voltage) + "\n")  # ustawienie napięcia
-        time.sleep(1)
+    """Metoda ustawiająca natężenie"""
+    def set_current(self, voltage, current):
         self.instr.write("CURR " + str(current) + "\n")  # ustawienie natężenia
+        time.sleep(1)
+
+    """Metoda ustawiająca moc wyjściową"""
+    def set_power(self, power):
+        self.instr.write("POW " + str(power) + "\n")
+        time.sleep(1)
+
+    """Metoda ustawiająca napięcie"""
+    def set_voltage(self, voltage):
+        self.instr.write("VOLT " + str(voltage) + "\n")
         time.sleep(1)
 
     """Metoda włączająca zasilanie"""
