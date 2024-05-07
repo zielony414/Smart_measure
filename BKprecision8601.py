@@ -62,20 +62,19 @@ class BKprecision8601:
         return answer
 
     """Metoda zmieniająca ustawienia w czasie"""
-    async def set_change(self, current_value, step, mode, duration, step_freq):
+    async def set_change(self, current_value, step, mode, duration, gather_freq):
         start_time = time.time()
         while time.time() - start_time < duration:
             if mode == "VOLT":
-                self.instr.write("VOLT " + str(current_value) + "\n")
+                self.set_voltage(current_value)
             elif mode == "CURR":
-                self.instr.write("CURR " + str(current_value) + "\n")
+                self.set_current(current_value)
             elif mode == "POW":
-                self.instr.write("POW " + str(current_value) + "\n")
+                self.set_power(current_value)
             time.sleep(1)
             current_value = current_value + step
-            await time.sleep(step_freq)
-
-
+            await time.sleep(gather_freq)
+        return 1
 
     """Metoda włączająca zasilanie"""
     def power_on(self):
