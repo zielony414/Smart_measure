@@ -1,42 +1,40 @@
 import pyvisa
 import time
 
-"""sterowanie prądem i mocą"""
-
 class BKprecision8601:
-    """Inicjalizacja połączenia z urządzeniem"""
+    """Initializing the connection to the device"""
     def __init__(self, port):
         try:
             self.instr = pyvisa.ResourceManager().open_resource(port)
         except pyvisa.Error as e:
-            print("Błąd inicjalizacji urządzenia: ", e)
+            print("Device initialization error: ", e)
 
-    """Metoda zwracająca nazwę urządzenia"""
+    """Method that returns the device name"""
     def it_is(self):
         answer = ""
         self.instr.clear()
         try:
             answer = self.instr.query("*IDN?")
         except pyvisa.Error as e:
-            print("Błąd odczytu nazwy urządzenia: ", e)
+            print("Error reading device name: ", e)
         return answer
 
-    """Metoda ustawiająca natężenie"""
+    """Method that sets the intensity"""
     def set_current(self, current):
         self.instr.write("CURR " + str(current) + "\n")  # ustawienie natężenia
         time.sleep(1)
 
-    """Metoda ustawiająca moc"""
+    """A method that sets the power"""
     def set_power(self, power):
         self.instr.write("POW " + str(power) + "\n")
         time.sleep(1)
 
-    """Metoda ustawiająca napięcie"""
+    """A method that sets the voltage"""
     def set_voltage(self, voltage):
         self.instr.write("VOLT " + str(voltage) + "\n")
         time.sleep(1)
 
-    """Metoda odczytująca natężenie napiecie i moc"""
+    """A method that reads current voltage and power"""
     def read(self):
         answer = ""
         try:
@@ -44,15 +42,15 @@ class BKprecision8601:
             answer += self.instr.query("VOLT?\n")
             answer += self.instr.query("POW?\n")
         except pyvisa.Error as e:
-            print("Błąd odczytu wartości: ", e)
+            print("Value reading error: ", e)
         return answer
 
-    """Metoda ustawiająca tryb pracy"""
+    """Method that sets the mode of device"""
     def set_mode(self, mode):
         self.instr.write("FUNC " + mode + "\n")
         time.sleep(1)
 
-    """Metoda odczytująca tryb pracy"""
+    """Method that reads the mode of device"""
     def read_mode(self):
         answer = ""
         try:
@@ -61,7 +59,7 @@ class BKprecision8601:
             print("Błąd odczytu trybu pracy: ", e)
         return answer
 
-    """Metoda zmieniająca ustawienia w czasie"""
+    """A method that changes settings over time"""
     async def set_change(self, current_value, step, mode, duration, gather_freq):
         start_time = time.time()
         while time.time() - start_time < duration:
@@ -76,17 +74,17 @@ class BKprecision8601:
             await time.sleep(gather_freq)
         return 1
 
-    """Metoda włączająca zasilanie"""
+    """Method of powering on the device"""
     def power_on(self):
         self.instr.write("OUTP ON\n")
         time.sleep(1)
 
-    """Metoda wyłączająca zasilanie"""
+    """Method of powering of the device"""
     def power_off(self):
         self.instr.write("OUTP OFF\n")
         time.sleep(1)
 
-    """Metoda resetująca urządzenie"""
+    """Method to reset the device"""
     def reset(self):
         self.instr.write("*RST\n")
         time.sleep(1)
