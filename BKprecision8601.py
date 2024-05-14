@@ -1,5 +1,6 @@
 import pyvisa
 import time
+import asyncio
 
 class BKprecision8601:
     """Initializing the connection to the device"""
@@ -36,11 +37,16 @@ class BKprecision8601:
 
     """A method that reads current voltage and power"""
     def read(self):
-        answer = ""
+        answer, powR, voltR, currR = "", "", "", ""
         try:
-            answer = self.instr.query("CURR?\n")
-            answer += self.instr.query("VOLT?\n")
-            answer += self.instr.query("POW?\n")
+            powR += self.instr.query("POW?\n")
+            time.sleep(1)
+            voltR += self.instr.query("VOLT?\n")
+            time.sleep(1)
+            currR += self.instr.query("CURR?\n")
+            time.sleep(1)
+
+            answer = "Power: " + powR + "Voltage: " + voltR + "Current: " + currR
         except pyvisa.Error as e:
             print("Value reading error: ", e)
         return answer
@@ -65,13 +71,16 @@ class BKprecision8601:
         while time.time() - start_time < duration:
             if mode == "VOLT":
                 self.set_voltage(current_value)
+                print(self.read())
             elif mode == "CURR":
                 self.set_current(current_value)
+                print(self.read())
             elif mode == "POW":
                 self.set_power(current_value)
+                print(self.read())
             time.sleep(1)
             current_value = current_value + step
-            await time.sleep(gather_freq)
+            await asyncio.sleep(gather_freq)
         return 1
 
     """Method of powering on the device"""
