@@ -42,28 +42,56 @@ class UiSettings:
         self.steps_list.append(first_step)
         self.steps_output()
 
-    # TODO Scanning for new devices
+    # Scanning for new devices
     def refresh_devices(self):
-        # Add scanning devices code
-        adress = self.rm.list_resources()
-        list = []
+        try:
+            # Add scanning devices code
+            adress = self.rm.list_resources()
+            list = []
+            adress = adress[::-1]
+
+            for i in adress:
+                print(i)
+                if i[:4] == "ASRL":
+                    # Próba połączenia z Multimetrem i zasilaczem
+                    Multimeter = FLUKE8808A.Fluke_8808A(i, 19200)
+                    Multimeter.configure()
+                    name = Multimeter.it_is()
+                    print(name)
+                    list.append((i, name))
+
+                elif i[:3] == "USB":
+                    # Próba połączenia z DCLoad
+                    DCLoad = BKprecision8601.BKprecision8601(i)
+                    name = DCLoad.it_is()
+                    list.append((i, name))
+
+            print(list)
+        except Exception as e:
+            print(f"An error occurred: {e}")
+
+        # ui.refresh_dev_lbl.setText("Devices found: "+str(len(list)))
+
+        # return list
+        """
         for i in adress:
-            if i[:4] == "ASRL":
-                # Próba połączenia z Multimetrem i zasilaczem
-                Multimeter = FLUKE8808A.Fluke_8808A(i, 19200)
-                name = Multimeter.it_is()
-                list.append((i, name))
+            try:
+                print(i)
+                instr = rm.open_resource(i)
+            except pyvisa.Error as e:
+                print("Błąd inicjalizacji urządzenia: ", e)
 
-            elif i[:3] == "USB":
-                # Próba połączenia z DCLoad
-                DCLoad = BKprecision8601.BKprecision8601(i)
-                name = DCLoad.it_is()
-                list.append((i, name))
+            try:
+                answer = ""
+                instr.clear()
 
-            else:
-                pass
+                answer = instr.query("*IDN?")
+                print(answer)
+            except pyvisa.Error as e:
+                print("Błąd odczytu nazwy urządzenia: ", e)
 
-        return list
+        """
+
 
     # Switching to next tab
     def next_page(self):
