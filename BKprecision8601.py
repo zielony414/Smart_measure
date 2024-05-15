@@ -40,11 +40,11 @@ class BKprecision8601:
     def read(self):
         answer, powR, voltR, currR = "", "", "", ""
         try:
-            powR += self.instr.query("POW?\n")
+            powR += self.instr.query("POW?")
             time.sleep(1)
-            voltR += self.instr.query("VOLT?\n")
+            voltR += self.instr.query("VOLT?")
             time.sleep(1)
-            currR += self.instr.query("CURR?\n")
+            currR += self.instr.query("CURR?")
             time.sleep(1)
 
             answer = "Power: " + powR + "Voltage: " + voltR + "Current: " + currR
@@ -54,14 +54,14 @@ class BKprecision8601:
 
     """Method that sets the mode of device"""
     def set_mode(self, mode):
-        self.instr.write("FUNC " + mode + "\n")
+        self.instr.write("FUNC " + mode)
         time.sleep(1)
 
     """Method that reads the mode of device"""
     def read_mode(self):
         answer = ""
         try:
-            answer = self.instr.query("FUNC?\n")
+            answer = self.instr.query("FUNC?")
         except pyvisa.Error as e:
             print("Błąd odczytu trybu pracy: ", e)
         return answer
@@ -79,7 +79,7 @@ class BKprecision8601:
             elif mode == "POW":
                 self.set_power(current_value)
                 print(self.read())
-            time.sleep(1)
+
             current_value = current_value + step
             await asyncio.sleep(gather_freq)
         return 1
