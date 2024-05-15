@@ -2,9 +2,17 @@ import pyvisa
 import ConfigData
 import BKprecision8601
 import FLUKE8808A
+import FLUKE8846A
+import TTI_CPX400DP
+import CTS_T6550
 
 
 class UiSettings:
+
+    # TODO dodać sprawdzenie czy DCLoad time per change nie jest większy niż time per step
+    # TODO dodać opcję ustawienia stałej wartości bez zmiany w DCLoad
+    # TODO dodać informację o tym że na multimetrach musi być ustawiony domyślny baud rate
+
     def __init__(self, ui):
         self.ui = ui
         self.rm = pyvisa.ResourceManager()
@@ -13,6 +21,7 @@ class UiSettings:
         self.freq = 1.0  # data gathering frequency
         self.time_per_step = 120  # time per step in seconds
         self.steps_list = []  # list of steps
+        self.DeviceList = []  # list of devices
 
         self.ui.step_num2_lbl.setEnabled(0)
         self.ui.step_num2_combo.setEnabled(0)
@@ -47,26 +56,28 @@ class UiSettings:
         try:
             # Add scanning devices code
             adress = self.rm.list_resources()
-            list = []
+
             adress = adress[::-1]
 
             for i in adress:
                 print(i)
                 if i[:4] == "ASRL":
                     # Próba połączenia z Multimetrem i zasilaczem
-                    Multimeter = FLUKE8808A.Fluke_8808A(i, 19200)
+                    Multimeter = FLUKE8808A.Fluke_8808A(i)
                     Multimeter.configure()
                     name = Multimeter.it_is()
                     print(name)
-                    list.append((i, name))
+                    available = True
+                    self.DeviceList.append((i, name, available))
 
                 elif i[:3] == "USB":
                     # Próba połączenia z DCLoad
                     DCLoad = BKprecision8601.BKprecision8601(i)
                     name = DCLoad.it_is()
-                    list.append((i, name))
+                    available = True
+                    self.DeviceList.append((i, name, available))
 
-            print(list)
+            print(self.DeviceList)
         except Exception as e:
             print(f"An error occurred: {e}")
 
@@ -92,6 +103,63 @@ class UiSettings:
 
         """
 
+        # Starting test
+
+    def start_test(self):
+        for i in range(len(self.DeviceList)):
+            if self.DeviceList[i][1] == "nazwa_BKprecision8601":
+                DCLoad = BKprecision8601.BKprecision8601(self.DeviceList[i][0])
+
+                if "CC" in self.steps_list[0].dcl_step:
+                    DCLoad.set_mode("CURR")
+                elif "CV" in self.steps_list[0].dcl_step:
+                    DCLoad.set_mode("VOLT")
+
+                DCLoad.set_current(self.steps_list[0].dcl_start)
+
+
+            elif self.DeviceList[i][1] == "nazwa_Fluke8808A":
+                if self.DeviceList[i][3] == "inlet_amm":
+                    inlet_amm = FLUKE8808A.Fluke_8808A(self.DeviceList[i][0])
+                    inlet_amm.configure()
+
+                elif self.DeviceList[i][3] == "inlet_volt":
+                    inlet_volt = FLUKE8808A.Fluke_8808A(self.DeviceList[i][0])
+                    inlet_volt.configure()
+
+                elif self.DeviceList[i][3] == "out_amm":
+                    out_amm = FLUKE8808A.Fluke_8808A(self.DeviceList[i][0])
+                    out_amm.configure()
+
+                elif self.DeviceList[i][3] == "out_volt":
+                    out_volt = FLUKE8808A.Fluke_8808A(self.DeviceList[i][0])
+                    out_volt.configure()
+
+
+            elif self.DeviceList[i][1] == "nazwa_Fluke8846A":
+                if self.DeviceList[i][3] == "inlet_amm":
+                    inlet_amm = FLUKE8846A.Fluke_8846A(self.DeviceList[i][0])
+                    inlet_amm.configure()
+
+                elif self.DeviceList[i][3] == "inlet_volt":
+                    inlet_volt = FLUKE8846A.Fluke_8846A(self.DeviceList[i][0])
+                    inlet_volt.configure()
+
+                elif self.DeviceList[i][3] == "out_amm":
+                    out_amm = FLUKE8846A.Fluke_8846A(self.DeviceList[i][0])
+                    out_amm.configure()
+
+                elif self.DeviceList[i][3] == "out_volt":
+                    out_volt = FLUKE8846A.Fluke_8846A(self.DeviceList[i][0])
+                    out_volt.configure()
+
+
+            elif self.DeviceList[i][1] == "nazwa_TTI_CPX400DP":
+                pass  # Where kod dla zasilacza
+
+
+            elif self.DeviceList[i][1] == "nazwa_CTS_T6550":
+                pass  # << na razie
 
     # Switching to next tab
     def next_page(self):
@@ -412,6 +480,61 @@ class UiSettings:
 
         self.steps_output()
 
-    # Starting test
-    def start_test(self):
-        pass
+    """
+    1 - inlet amm
+    2 - inlet volt
+    3 - outlet amm
+    4 - outlet volt
+    5 - DC load
+    6 - power supply
+    7 - temp chamber
+    """
+
+    def dev1_set(self):
+        text = self.ui.device1.currentText()
+
+        for i in range(len(self.DeviceList)):
+            if self.DeviceList[i][1] == text and self.DeviceList[0][2]:
+                self.DeviceList[i].append("inlet_amm")
+
+    def dev2_set(self):
+        text = self.ui.device2.currentText()
+
+        for i in range(len(self.DeviceList)):
+            if self.DeviceList[i][1] == text and self.DeviceList[i][2]:
+                self.DeviceList[i].append("inlet_volt")
+
+    def dev3_set(self):
+        text = self.ui.device3.currentText()
+
+        for i in range(len(self.DeviceList)):
+            if self.DeviceList[i][1] == text and self.DeviceList[i][2]:
+                self.DeviceList[i].append("out_amm")
+
+    def dev4_set(self):
+        text = self.ui.device4.currentText()
+
+        for i in range(len(self.DeviceList)):
+            if self.DeviceList[i][1] == text and self.DeviceList[i][2]:
+                self.DeviceList[i].append("out_volt")
+
+    def dev5_set(self):
+        text = self.ui.device4.currentText()
+
+        for i in range(len(self.DeviceList)):
+            if self.DeviceList[i][1] == text and self.DeviceList[i][2]:
+                self.DeviceList[i].append("DCL")
+
+    def dev6_set(self):
+        text = self.ui.device4.currentText()
+
+        for i in range(len(self.DeviceList)):
+            if self.DeviceList[i][1] == text and self.DeviceList[i][2]:
+                self.DeviceList[i].append("PSU")
+
+    def dev7_set(self):
+        text = self.ui.device4.currentText()
+
+        for i in range(len(self.DeviceList)):
+            if self.DeviceList[i][1] == text and self.DeviceList[i][2]:
+                self.DeviceList[i].append("TempChamber")

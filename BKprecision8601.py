@@ -2,6 +2,7 @@ import pyvisa
 import time
 import asyncio
 
+
 class BKprecision8601:
     """Initializing the connection to the device"""
     def __init__(self, port):
