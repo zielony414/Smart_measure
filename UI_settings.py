@@ -64,11 +64,15 @@ class UiSettings:
                 if i[:4] == "ASRL":
                     # Próba połączenia z Multimetrem i zasilaczem
                     Multimeter = FLUKE8808A.Fluke_8808A(i)
+                    PowerSupply = TTI_CPX400DP.TTI_CPX400DP(i)
                     Multimeter.configure()
                     name = Multimeter.it_is()
+                    name2 = PowerSupply.it_is()
                     print(name)
+                    print(name2)
                     available = True
                     self.DeviceList.append((i, name, available))
+                    self.DeviceList.append((i, name2, available))
 
                 elif i[:3] == "USB":
                     # Próba połączenia z DCLoad
@@ -155,8 +159,10 @@ class UiSettings:
 
 
             elif self.DeviceList[i][1] == "nazwa_TTI_CPX400DP":
-                pass  # Where kod dla zasilacza
+                power_supply = TTI_CPX400DP.TTI_CPX400DP(self.DeviceList[i][0])
 
+                power_supply.set_voltage(self.steps_list[0].psu_volt)
+                power_supply.set_current(self.steps_list[0].psu_amm)
 
             elif self.DeviceList[i][1] == "nazwa_CTS_T6550":
                 pass  # << na razie
