@@ -72,13 +72,10 @@ class BKprecision8601:
         while time.time() - start_time < duration:
             if mode == "VOLT":
                 self.set_voltage(current_value)
-                print(self.read())
             elif mode == "CURR":
                 self.set_current(current_value)
-                print(self.read())
             elif mode == "POW":
                 self.set_power(current_value)
-                print(self.read())
 
             current_value = current_value + step
             await asyncio.sleep(gather_freq)
@@ -86,12 +83,12 @@ class BKprecision8601:
 
     """Method of powering on the device"""
     def power_on(self):
-        self.instr.write("OUTP ON\n")
+        self.instr.write("INP 1")
         time.sleep(1)
 
     """Method of powering of the device"""
     def power_off(self):
-        self.instr.write("OUTP OFF\n")
+        self.instr.write("INP 0")
         time.sleep(1)
 
     """Method to reset the device"""
