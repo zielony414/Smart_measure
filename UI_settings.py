@@ -1,4 +1,6 @@
 import pyvisa
+import os
+import shutil
 import ConfigData
 import BKprecision8601
 import FLUKE8808A
@@ -86,64 +88,175 @@ class UiSettings:
                 self.ui.device_port_7.addItem(address)    
 
 
+<<<<<<< Updated upstream
     # Starting test
+=======
+    # (port_com, nazwa, baudrate, przeznaczenie)
+    """
+       1 - inlet amm
+       2 - inlet volt
+       3 - outlet amm
+       4 - outlet volt
+       5 - DC load
+       6 - power supply
+       7 - temp chamber
+       """
+    # TODO dodać walidację, jeżeli lista urządzeń jest pusta
+>>>>>>> Stashed changes
     def start_test(self):
+
+        self.ui.state_lbl.setText("Setting devices...")
+
+        estim_sec = 30
+        for j in range(len(self.steps_list)):
+            estim_sec += (self.steps_list[j].dcl_changes_no * 10)
+        estim_mins = round(estim_sec/60, 0)
+        estim_hours = round(estim_mins/60, 0)
+
+        self.ui.estimated_time_lbl.setText("Estimated test time: " + str(estim_hours) + ":" + str(estim_mins) + ":" + str(estim_sec))
+
+        devices = {}
+
         for i in range(len(self.DeviceList)):
-            if self.DeviceList[i][1] == "nazwa_BKprecision8601":
+            if "8601" in self.DeviceList[i][1]:
                 DCLoad = BKprecision8601.BKprecision8601(self.DeviceList[i][0])
+                devices["DCload"] = DCLoad
 
-                if "CC" in self.steps_list[0].dcl_step:
-                    DCLoad.set_mode("CURR")
-                elif "CV" in self.steps_list[0].dcl_step:
-                    DCLoad.set_mode("VOLT")
-
-                DCLoad.set_current(self.steps_list[0].dcl_start)
-
-
-            elif self.DeviceList[i][1] == "nazwa_Fluke8808A":
-                if self.DeviceList[i][3] == "inlet_amm":
-                    inlet_amm = FLUKE8808A.Fluke_8808A(self.DeviceList[i][0])
+            elif "8808A" in self.DeviceList[i][1]:
+                if self.DeviceList[i][3] == 1:
+                    inlet_amm = FLUKE8808A.Fluke_8808A(self.DeviceList[i][0], self.DeviceList[i][2])
                     inlet_amm.configure()
+                    devices["inlet_amm"] = inlet_amm
 
-                elif self.DeviceList[i][3] == "inlet_volt":
-                    inlet_volt = FLUKE8808A.Fluke_8808A(self.DeviceList[i][0])
+                elif self.DeviceList[i][3] == 2:
+                    inlet_volt = FLUKE8808A.Fluke_8808A(self.DeviceList[i][0], self.DeviceList[i][2])
                     inlet_volt.configure()
+                    devices["inlet_volt"] = inlet_volt
 
-                elif self.DeviceList[i][3] == "out_amm":
-                    out_amm = FLUKE8808A.Fluke_8808A(self.DeviceList[i][0])
+                elif self.DeviceList[i][3] == 3:
+                    out_amm = FLUKE8808A.Fluke_8808A(self.DeviceList[i][0], self.DeviceList[i][2])
                     out_amm.configure()
+                    devices["out_amm"] = out_amm
 
-                elif self.DeviceList[i][3] == "out_volt":
-                    out_volt = FLUKE8808A.Fluke_8808A(self.DeviceList[i][0])
+                elif self.DeviceList[i][3] == 4:
+                    out_volt = FLUKE8808A.Fluke_8808A(self.DeviceList[i][0], self.DeviceList[i][2])
                     out_volt.configure()
+                    devices["out_volt"] = out_volt
 
-
-            elif self.DeviceList[i][1] == "nazwa_Fluke8846A":
-                if self.DeviceList[i][3] == "inlet_amm":
-                    inlet_amm = FLUKE8846A.Fluke_8846A(self.DeviceList[i][0])
+            elif "8846A" in self.DeviceList[i][1]:
+                if self.DeviceList[i][3] == 1:
+                    inlet_amm = FLUKE8846A.Fluke_8846A(self.DeviceList[i][0], self.DeviceList[i][2])
                     inlet_amm.configure()
+                    devices["inlet_amm"] = inlet_amm
 
-                elif self.DeviceList[i][3] == "inlet_volt":
-                    inlet_volt = FLUKE8846A.Fluke_8846A(self.DeviceList[i][0])
+                elif self.DeviceList[i][3] == 2:
+                    inlet_volt = FLUKE8846A.Fluke_8846A(self.DeviceList[i][0], self.DeviceList[i][2])
                     inlet_volt.configure()
+                    devices["inlet_volt"] = inlet_volt
 
-                elif self.DeviceList[i][3] == "out_amm":
-                    out_amm = FLUKE8846A.Fluke_8846A(self.DeviceList[i][0])
+                elif self.DeviceList[i][3] == 3:
+                    out_amm = FLUKE8846A.Fluke_8846A(self.DeviceList[i][0], self.DeviceList[i][2])
                     out_amm.configure()
+                    devices["out_amm"] = out_amm
 
-                elif self.DeviceList[i][3] == "out_volt":
-                    out_volt = FLUKE8846A.Fluke_8846A(self.DeviceList[i][0])
+                elif self.DeviceList[i][3] == 4:
+                    out_volt = FLUKE8846A.Fluke_8846A(self.DeviceList[i][0], self.DeviceList[i][2])
                     out_volt.configure()
+                    devices["out_volt"] = out_volt
 
-
-            elif self.DeviceList[i][1] == "nazwa_TTI_CPX400DP":
+            elif "CPX400DP" in self.DeviceList[i][1]:
                 power_supply = TTI_CPX400DP.TTI_CPX400DP(self.DeviceList[i][0])
+                devices["power_supply"] = power_supply
 
-                power_supply.set_voltage(self.steps_list[0].psu_volt)
-                power_supply.set_current(self.steps_list[0].psu_amm)
 
-            elif self.DeviceList[i][1] == "nazwa_CTS_T6550":
-                pass  # << na razie
+            elif "T6550" in self.DeviceList[i][1]:
+                pass  # << do zrobienia dla przyszłych pokoleń
+
+        # Setting inlet ammeter
+        devices["inlet_amm"].set_DCcurrent()
+
+        # Setting inlet voltmeter
+        devices["inlet_volt"].set_DCvolts()
+
+        # Setting outlet ammeter
+        devices["out_amm"].set_DCcurrent()
+
+        # Setting outlet voltmeter
+        devices["out_volt"].set_DCvolts()
+
+        # Tworzenie forlderu badania
+        folder_name = self.ui.test_name_ledit.text()
+
+        if folder_name == "":
+            self.ui.state_lbl.setText("No test name!")
+            self.ui.estimated_time_lbl.setText("")
+            return
+
+        if not os.path.exists(folder_name):
+            os.mkdir(folder_name)
+
+
+
+        self.ui.state_lbl.setText("Testing...")
+
+        for i in range(self.steps_number):
+
+            # Tworzenie plików do badań
+            inlet_amm_path = os.path.join(folder_name, ("inlet_volt"+str(i)+".txt"))
+            inlet_volt_path = os.path.join(folder_name, ("inlet_volt"+str(i)+".txt"))
+            out_amm_path = os.path.join(folder_name, ("inlet_volt"+str(i)+".txt"))
+            out_volt_path = os.path.join(folder_name, ("inlet_volt"+str(i)+".txt"))
+
+            inlet_amm_file = open(inlet_amm_path, 'w')
+            inlet_amm_file.write("Inlet ammeter")
+
+            inlet_volt_file = open(inlet_volt_path, 'w')
+            inlet_volt_file.write("Inlet ammeter")
+
+            out_amm_file = open(out_amm_path, 'w')
+            out_amm_file.write("Inlet ammeter")
+
+            out_volt_file = open(out_volt_path, 'w')
+            out_volt_file.write("Inlet ammeter")
+
+
+            # Setting DCLoad
+            if "CC" in self.steps_list[i].dcl_step:
+                devices["DCload"].set_mode("CURR")
+                devices["DCload"].set_current(self.steps_list[i].dcl_start)
+            elif "CV" in self.steps_list[i].dcl_step:
+                devices["DCload"].set_mode("VOLT")
+                devices["DCload"].set_current(self.steps_list[i].dcl_start)
+
+            devices["DCload"].set_current(self.steps_list[i].dcl_start)
+            devices["DCload"].power_on()
+
+            # Setting PSU
+            devices["power_supply"].set_voltage(self.steps_list[i].psu_volt)
+            devices["power_supply"].set_current(self.steps_list[i].psu_amm)
+            devices["power_supply"].power_on()
+
+            for j in range(self.steps_list[i].dcl_changes_no):
+                devices["inlet_amm"].start_measure2(self.steps_list[i].dcl_changes_no, inlet_amm_file)
+                devices["inlet_volt"].start_measure2(self.steps_list[i].dcl_changes_no, inlet_volt_file)
+                devices["out_amm"].start_measure2(self.steps_list[i].dcl_changes_no, out_amm_file)
+                devices["out_volt"].start_measure2(self.steps_list[i].dcl_changes_no, out_volt_file)
+
+            inlet_amm_file.close()
+            inlet_volt_file.close()
+            out_amm_file.close()
+            out_volt_file.close()
+
+        if self.ui.generate_raport_chkbox.isChecked():
+            # Uruchomienie macro excela
+            # TODO Czekamy na Ale
+            pass
+
+        if self.ui.delete_txt_chkbox.isChecked():
+            shutil.rmtree(folder_name)
+
+
+
 
     # Switching to next tab
     def next_page(self):

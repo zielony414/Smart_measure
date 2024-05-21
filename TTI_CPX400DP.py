@@ -54,3 +54,4 @@ class TTI_CPX400DP:
     def reset(self):
         self.instr.write("*RST")
         time.sleep(1)
+

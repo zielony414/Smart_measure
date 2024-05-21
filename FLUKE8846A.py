@@ -6,7 +6,7 @@ import datetime
 class Fluke_8846A:
 
     '''Konstruktor ustawiajacy wszystkie najważniejsze pozycje'''
-    def __init__(self, port, baud_rate=9600, mode = 1, timeout=5000):
+    def __init__(self, port, baud_rate=9600, mode=1, timeout=5000):
         self.instr = pyvisa.ResourceManager().open_resource(port)
         self.mode = mode #tryb działania multimetru (only info)
         self.instr.baud_rate = baud_rate
@@ -63,7 +63,7 @@ class Fluke_8846A:
         string = str(czas + " " + reader)
 
         print(string)
-        #file.write(string)
+        file.write(string)
         #await asyncio.sleep(gather_freq)
         return 1
 

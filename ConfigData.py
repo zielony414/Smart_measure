@@ -26,7 +26,7 @@ class ConfigData:
 
         self.dcl_mode = "Constant current (CC)"
         self.dcl_step = 5.0
-        self.dcl_time = 30.0
+        self.dcl_changes_no = 5
         self.dcl_start = 1.0
 
         self.chb_temp = 20.0

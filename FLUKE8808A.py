@@ -7,7 +7,7 @@ import datetime
 class Fluke_8808A:
 
     '''The constructor sets all the most important items'''
-    def  __init__(self, port, baud_rate=19200, mode= 1, timeout=5000):
+    def  __init__(self, port, baud_rate=19200, mode=1, timeout=5000):
         self.instr = pyvisa.ResourceManager().open_resource(port)
         self.mode = mode  # multimetr operation mode (only info)
         self.instr.baud_rate = baud_rate
@@ -62,7 +62,7 @@ class Fluke_8808A:
         return 1
     
     '''The main method for starting measurements with number of measurments'''
-    async def start_measure(self, number_of_measurements: int, file):
+    async def start_measure2(self, number_of_measurements: int, file):
         start_time = time.time()
 
         # clearing the communication buffer
@@ -83,7 +83,7 @@ class Fluke_8808A:
             string = str(time_captured + " " + reader)
 
             print(string)
-            #file.write(string)
+            file.write(string)
             
             time.sleep(gather_freq)
             #await asyncio.sleep(gather_freq)
