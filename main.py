@@ -60,5 +60,7 @@ if __name__ == "__main__":
     ui.save_cfg_btn1.clicked.connect(ui_set.save_config)
     ui.save_cfg_btn2.clicked.connect(ui_set.save_config)
 
+    ui.browse_path_toolbtn.clicked.connect(ui_set.find_path_clicked)
+
     BurySmartMeasureClass.show()
     sys.exit(app.exec_())

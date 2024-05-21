@@ -50,12 +50,12 @@ class TTI_CPX400DP:
         time.sleep(1)
 
     '''Turns on the output of the power supply'''
-    def OUTPUT_ON(self):
+    def output_on(self):
         self.instr.write("OP1 1")
         time.sleep(1)
 
     '''Turns off the output of the power supply'''
-    def OUTPUT_OFF(self):
+    def output_off(self):
         self.instr.write("OP1 0")
         time.sleep(1)
 

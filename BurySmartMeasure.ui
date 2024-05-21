@@ -23,7 +23,7 @@
       <x>-4</x>
       <y>-1</y>
       <width>811</width>
-      <height>611</height>
+      <height>621</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -2372,10 +2372,10 @@
      <widget class="QToolButton" name="browse_path_toolbtn">
       <property name="geometry">
        <rect>
-        <x>460</x>
-        <y>120</y>
-        <width>41</width>
-        <height>21</height>
+        <x>560</x>
+        <y>110</y>
+        <width>51</width>
+        <height>31</height>
        </rect>
       </property>
       <property name="text">
@@ -2387,14 +2387,17 @@
        <rect>
         <x>280</x>
         <y>110</y>
-        <width>171</width>
+        <width>271</width>
         <height>31</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <pointsize>12</pointsize>
+        <pointsize>9</pointsize>
        </font>
+      </property>
+      <property name="text">
+       <string/>
       </property>
       <property name="maxLength">
        <number>250</number>
@@ -2479,7 +2482,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Testing...</string>
+       <string/>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -2500,7 +2503,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Elapsed time: 00:02:21</string>
+       <string/>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -2521,7 +2524,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Estimated time to completion: 00:21:15</string>
+       <string/>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>

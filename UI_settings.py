@@ -8,6 +8,7 @@ import FLUKE8808A
 import FLUKE8846A
 import TTI_CPX400DP
 import CTS_T6550
+from PyQt5.QtWidgets import QFileDialog
 
 
 class UiSettings:
@@ -26,9 +27,12 @@ class UiSettings:
         self.time_per_step = 120  # time per step in seconds
         self.steps_list = []  # list of steps
         self.DeviceList = []  # list of devices
+        self.save_path = None  # path to save files
 
-        self.list_baud_rates = ["110", "300", "600", "1200", "2400", "4800", "9600", "14400", "19200", "38400", "57600"]  # list of baud rates for combos
-        self.list_available_devices = ["FLUKE8808A", "FLUKE8846A", "BKprecision8601", "TTI_CPX400DP"]  # list of devices for which the interface is created
+        self.list_baud_rates = ["110", "300", "600", "1200", "2400", "4800", "9600", "14400", "19200", "38400",
+                                "57600"]  # list of baud rates for combos
+        self.list_available_devices = ["FLUKE8808A", "FLUKE8846A", "BKprecision8601",
+                                       "TTI_CPX400DP"]  # list of devices for which the interface is created
 
         self.ui.step_num2_lbl.setEnabled(0)
         self.ui.step_num2_combo.setEnabled(0)
@@ -60,7 +64,7 @@ class UiSettings:
 
     # Scanning for new devices
     def refresh_devices(self):
-        
+
         self.rm = pyvisa.ResourceManager()
         tmp_list = list(self.rm.list_resources())
 
@@ -86,10 +90,10 @@ class UiSettings:
                 self.ui.device_port_4.addItem(address)
                 self.ui.device_port_5.addItem(address)
                 self.ui.device_port_6.addItem(address)
-                self.ui.device_port_7.addItem(address)    
+                self.ui.device_port_7.addItem(address)
 
+                # Starting test
 
-    # Starting test
     # (port_com, nazwa, baudrate, przeznaczenie)
     """
        1 - inlet amm
@@ -100,18 +104,39 @@ class UiSettings:
        6 - power supply
        7 - temp chamber
        """
-    # TODO dodać walidację, jeżeli lista urządzeń jest pusta
+    def find_path_clicked(self):
+        options = QFileDialog.Options()
+        self.save_path = QFileDialog.getExistingDirectory(None, "Select Directory", "",
+                                                          QFileDialog.ShowDirsOnly | QFileDialog.DontUseNativeDialog)
+
+        if self.save_path:
+            print(self.save_path)
+            self.ui.save_path_ledit.setText(self.save_path)
+
     def start_test(self):
 
         self.ui.state_lbl.setText("Setting devices...")
 
+        if len(self.DeviceList) < 6:
+            self.ui.state_lbl.setText("Test devices first!")
+            return
+
+        # Tworzenie forlderu badania
+        folder_name = self.ui.test_name_ledit.text()
+
+        if folder_name == "":
+            self.ui.state_lbl.setText("No test name!")
+            self.ui.estimated_time_lbl.setText("")
+            return
+
         estim_sec = 30
         for j in range(len(self.steps_list)):
             estim_sec += (self.steps_list[j].dcl_changes_no * 10)
-        estim_mins = round(estim_sec/60, 0)
-        estim_hours = round(estim_mins/60, 0)
+        estim_mins = round(estim_sec / 60, 0)
+        estim_hours = round(estim_mins / 60, 0)
 
-        self.ui.estimated_time_lbl.setText("Estimated test time: " + str(estim_hours) + ":" + str(estim_mins) + ":" + str(estim_sec))
+        self.ui.estimated_time_lbl.setText(
+            "Estimated test time: " + str(estim_hours) + ":" + str(estim_mins) + ":" + str(estim_sec))
 
         devices = {}
 
@@ -182,28 +207,18 @@ class UiSettings:
         # Setting outlet voltmeter
         devices["out_volt"].set_DCvolts()
 
-        # Tworzenie forlderu badania
-        folder_name = self.ui.test_name_ledit.text()
-
-        if folder_name == "":
-            self.ui.state_lbl.setText("No test name!")
-            self.ui.estimated_time_lbl.setText("")
-            return
-
         if not os.path.exists(folder_name):
             os.mkdir(folder_name)
-
-
 
         self.ui.state_lbl.setText("Testing...")
 
         for i in range(self.steps_number):
 
             # Tworzenie plików do badań
-            inlet_amm_path = os.path.join(folder_name, ("inlet_volt"+str(i)+".txt"))
-            inlet_volt_path = os.path.join(folder_name, ("inlet_volt"+str(i)+".txt"))
-            out_amm_path = os.path.join(folder_name, ("inlet_volt"+str(i)+".txt"))
-            out_volt_path = os.path.join(folder_name, ("inlet_volt"+str(i)+".txt"))
+            inlet_amm_path = os.path.join(os.path.join(self.save_path, folder_name), ("inlet_volt" + str(i) + ".txt"))
+            inlet_volt_path = os.path.join(os.path.join(self.save_path, folder_name), ("inlet_volt" + str(i) + ".txt"))
+            out_amm_path = os.path.join(os.path.join(self.save_path, folder_name), ("inlet_volt" + str(i) + ".txt"))
+            out_volt_path = os.path.join(os.path.join(self.save_path, folder_name), ("inlet_volt" + str(i) + ".txt"))
 
             inlet_amm_file = open(inlet_amm_path, 'w')
             inlet_amm_file.write("Inlet ammeter")
@@ -216,7 +231,6 @@ class UiSettings:
 
             out_volt_file = open(out_volt_path, 'w')
             out_volt_file.write("Inlet ammeter")
-
 
             # Setting DCLoad
             if "CC" in self.steps_list[i].dcl_step:
@@ -232,13 +246,16 @@ class UiSettings:
             # Setting PSU
             devices["power_supply"].set_voltage(self.steps_list[i].psu_volt)
             devices["power_supply"].set_current(self.steps_list[i].psu_amm)
-            devices["power_supply"].power_on()
+            devices["power_supply"].output_on()
 
             for j in range(self.steps_list[i].dcl_changes_no):
                 devices["inlet_amm"].start_measure2(self.steps_list[i].dcl_changes_no, inlet_amm_file)
                 devices["inlet_volt"].start_measure2(self.steps_list[i].dcl_changes_no, inlet_volt_file)
                 devices["out_amm"].start_measure2(self.steps_list[i].dcl_changes_no, out_amm_file)
                 devices["out_volt"].start_measure2(self.steps_list[i].dcl_changes_no, out_volt_file)
+
+            devices["DCload"].power_off()
+            devices["power_supply"].output_off()
 
             inlet_amm_file.close()
             inlet_volt_file.close()
@@ -252,7 +269,6 @@ class UiSettings:
 
         if self.ui.delete_txt_chkbox.isChecked():
             shutil.rmtree(folder_name)
-
 
     # Switching to next tab
     def next_page(self):
@@ -426,7 +442,7 @@ class UiSettings:
 
         self.ui.DCload_mode_combo.setCurrentText(step.dcl_mode)
         self.ui.DCload_step_spb.setValue(step.dcl_step)
-        self.ui.DCload_time_spb.setValue(step.dcl_time)
+        self.ui.DCload_time_spb.setValue(step.dcl_changes_no)
         self.ui.DCload_start_spb.setValue(step.dcl_start)
         self.DCload_mode_change()
 
@@ -487,7 +503,8 @@ class UiSettings:
             self.ui.steps_textEdit.append(
                 "Step " + str(i + 1) + ": PSU " + str(step.psu_volt) + step.psu_volt_unit + ", " + str(
                     step.psu_amm) + step.psu_amm_unit + "; DCL " + ", start:" + str(
-                    step.dcl_start) + unit_list + " step " + str(step.dcl_step) + unit_list + " every " + "dcl_time" + "s, ")
+                    step.dcl_start) + unit_list + " step " + str(
+                    step.dcl_step) + unit_list + " every " + "dcl_time" + "s, ")
 
             if not step.chb_allow_temp_err:
                 temp_err_text = "Temp err: off"
@@ -510,8 +527,8 @@ class UiSettings:
                 self.ui.steps_textEdit2.append(
                     "Step " + str(i + 1) + ": PSU " + str(step.psu_volt) + step.psu_volt_unit + ", " + str(
                         step.psu_amm) + step.psu_amm_unit + "; DCL " + ", start:" + str(
-                        step.dcl_start) + unit_list + " step " + str(step.dcl_step) + unit_list + " every " + str(
-                        step.dcl_time) + "s, CHB: " + str(step.chb_start_temp) + "°C, " + str(step.chb_temp_step) +
+                        step.dcl_start) + unit_list + " step " + str(step.dcl_step) + unit_list + " changes: " + str(
+                        step.dcl_changes_no) + "s, CHB: " + str(step.chb_start_temp) + "°C, " + str(step.chb_temp_step) +
                     "°C/min, " + temp_err_text + ", " + humidity_err_text)
 
     def DCload_mode_change(self):
@@ -551,7 +568,7 @@ class UiSettings:
 
         self.steps_list[self.step_no].dcl_mode = self.ui.DCload_mode_combo.currentText()
         self.steps_list[self.step_no].dcl_step = round(float(self.ui.DCload_step_spb.value()), 4)
-        self.steps_list[self.step_no].dcl_time = round(float(self.ui.DCload_time_spb.value()), 2)
+        self.steps_list[self.step_no].dcl_changes_no = round(float(self.ui.DCload_time_spb.value()), 2)
         self.steps_list[self.step_no].dcl_start = round(float(self.ui.DCload_start_spb.value()), 4)
 
         self.steps_list[self.step_no].use_chamber = self.ui.use_temp_chamber_chkbox.isChecked()
@@ -591,7 +608,7 @@ class UiSettings:
         self.ui.device_port_4.addItems(self.list_ports)
         self.ui.device_port_5.addItems(self.list_ports)
         self.ui.device_port_6.addItems(self.list_ports)
-        #self.ui.device_port_7.addItems(self.list_ports)
+        # self.ui.device_port_7.addItems(self.list_ports)
 
         # combo boxes "Baud rate"
         self.ui.baud_rate_1.addItems(self.list_baud_rates)
@@ -602,7 +619,7 @@ class UiSettings:
         self.ui.baud_rate_5.setCurrentIndex(1)
         self.ui.baud_rate_6.addItem("-----")
         self.ui.baud_rate_6.setCurrentIndex(1)
-        #self.ui.baud_rate_7.addItems(self.list_baud_rates)
+        # self.ui.baud_rate_7.addItems(self.list_baud_rates)
 
         # combo boxes "Model"
         self.ui.device_model1.addItems(self.list_available_devices[:2])
@@ -611,12 +628,13 @@ class UiSettings:
         self.ui.device_model4.addItems(self.list_available_devices[:2])
         self.ui.device_model5.addItem(self.list_available_devices[3])
         self.ui.device_model6.addItem(self.list_available_devices[2])
-        #self.ui.device_model7.addItem()
+        # self.ui.device_model7.addItem()
 
-    def check_unique_texts(self, *texts):
+    @staticmethod
+    def check_unique_texts(*texts):
         # Tworzymy zbiór z podanych tekstów
         unique_texts = set(texts)
-    
+
         # Sprawdzamy, czy rozmiar zbioru jest równy liczbie podanych tekstów
         # jeśli teksty są unikalne zwraca true
         return len(unique_texts) == len(texts)
@@ -624,14 +642,18 @@ class UiSettings:
     def test_connection(self):
         check = 0
         list_models = []
-        list_models.append((self.ui.device_port_1.currentText(), self.ui.device_model1.currentText(), self.ui.baud_rate_1.currentText(), 1))
-        list_models.append((self.ui.device_port_2.currentText(), self.ui.device_model2.currentText(), self.ui.baud_rate_2.currentText(), 2))
-        list_models.append((self.ui.device_port_3.currentText(), self.ui.device_model3.currentText(), self.ui.baud_rate_3.currentText(), 3))
-        list_models.append((self.ui.device_port_4.currentText(), self.ui.device_model4.currentText(), self.ui.baud_rate_4.currentText(), 4))
+        list_models.append((self.ui.device_port_1.currentText(), self.ui.device_model1.currentText(),
+                            self.ui.baud_rate_1.currentText(), 1))
+        list_models.append((self.ui.device_port_2.currentText(), self.ui.device_model2.currentText(),
+                            self.ui.baud_rate_2.currentText(), 2))
+        list_models.append((self.ui.device_port_3.currentText(), self.ui.device_model3.currentText(),
+                            self.ui.baud_rate_3.currentText(), 3))
+        list_models.append((self.ui.device_port_4.currentText(), self.ui.device_model4.currentText(),
+                            self.ui.baud_rate_4.currentText(), 4))
         list_models.append((self.ui.device_port_5.currentText(), self.ui.device_model5.currentText(), 0, 5))
         list_models.append((self.ui.device_port_6.currentText(), self.ui.device_model6.currentText(), 0, 6))
-        #list_models.append((self.ui.device_port_7.currentText(), self.ui.device_model7.currentText(), self.ui.baud_rate_7.currentText()))
-        
+        # list_models.append((self.ui.device_port_7.currentText(), self.ui.device_model7.currentText(), self.ui.baud_rate_7.currentText()))
+
         # protection against starting with too few devices
         for port in list_models:
             if port[0] == '':
@@ -640,7 +662,8 @@ class UiSettings:
                 return 0
 
         # protection against connecting to one port several times
-        if not self.check_unique_texts(list_models[0][0], list_models[1][0], list_models[2][0], list_models[3][0], list_models[4][0], list_models[5][0]):
+        if not self.check_unique_texts(list_models[0][0], list_models[1][0], list_models[2][0], list_models[3][0],
+                                       list_models[4][0], list_models[5][0]):
             news = sm.Small_window()
             news.show_warning("You cannot connect to one port twice! Fix ports.")
             return 0
@@ -654,9 +677,9 @@ class UiSettings:
                     print(answer)
                 except Exception as e:
                     news = sm.Small_window()
-                    news.show_error(f"Error with {i+1} device: " + str(e))
+                    news.show_error(f"Error with {i + 1} device: " + str(e))
                 else:
-                   check += 1
+                    check += 1
             elif list_models[i][1] == "FLUKE8846A":
                 try:
                     meter = FLUKE8846A.Fluke_8846A(list_models[i][0], int(list_models[i][2]))
@@ -664,7 +687,7 @@ class UiSettings:
                     print(answer)
                 except Exception as e:
                     news = sm.Small_window()
-                    news.show_error(f"Error with {i+1} device: " + str(e))
+                    news.show_error(f"Error with {i + 1} device: " + str(e))
                 else:
                     check += 1
             elif list_models[i][1] == "TTI_CPX400DP":
@@ -674,7 +697,7 @@ class UiSettings:
                     print(answer)
                 except Exception as e:
                     news = sm.Small_window()
-                    news.show_error(f"Error with {i+1} device: " + str(e))
+                    news.show_error(f"Error with {i + 1} device: " + str(e))
                 else:
                     check += 1
             elif list_models[i][1] == "BKprecision8601":
@@ -684,7 +707,7 @@ class UiSettings:
                     print(answer)
                 except Exception as e:
                     news = sm.Small_window()
-                    news.show_error(f"Error with {i+1} device: " + str(e))
+                    news.show_error(f"Error with {i + 1} device: " + str(e))
                 else:
                     check += 1
 
@@ -694,9 +717,3 @@ class UiSettings:
             return 1  # test passed
         else:
             return 0  # test failed
-                
-
-
-            
-        
-
