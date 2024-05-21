@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>610</height>
+    <width>804</width>
+    <height>619</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -36,7 +36,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>3</number>
+     <number>0</number>
     </property>
     <property name="elideMode">
      <enum>Qt::ElideNone</enum>
@@ -51,9 +51,9 @@
      <widget class="QWidget" name="dev_usage" native="true">
       <property name="geometry">
        <rect>
-        <x>390</x>
+        <x>610</x>
         <y>80</y>
-        <width>181</width>
+        <width>191</width>
         <height>241</height>
        </rect>
       </property>
@@ -144,10 +144,10 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="devices" native="true">
+     <widget class="QWidget" name="device_model" native="true">
       <property name="geometry">
        <rect>
-        <x>200</x>
+        <x>420</x>
         <y>80</y>
         <width>191</width>
         <height>251</height>
@@ -155,7 +155,7 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="QComboBox" name="device1">
+        <widget class="QComboBox" name="device_model1">
          <item>
           <property name="text">
            <string/>
@@ -164,22 +164,58 @@
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="device2"/>
+        <widget class="QComboBox" name="device_model2">
+         <item>
+          <property name="text">
+           <string/>
+          </property>
+         </item>
+        </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="device3"/>
+        <widget class="QComboBox" name="device_model3">
+         <item>
+          <property name="text">
+           <string/>
+          </property>
+         </item>
+        </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="device4"/>
+        <widget class="QComboBox" name="device_model4">
+         <item>
+          <property name="text">
+           <string/>
+          </property>
+         </item>
+        </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="device5"/>
+        <widget class="QComboBox" name="device_model5">
+         <item>
+          <property name="text">
+           <string/>
+          </property>
+         </item>
+        </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="device6"/>
+        <widget class="QComboBox" name="device_model6">
+         <item>
+          <property name="text">
+           <string/>
+          </property>
+         </item>
+        </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="device7"/>
+        <widget class="QComboBox" name="device_model7">
+         <item>
+          <property name="text">
+           <string/>
+          </property>
+         </item>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -212,14 +248,14 @@
      <widget class="QLabel" name="dev_list_lbl">
       <property name="geometry">
        <rect>
-        <x>210</x>
+        <x>430</x>
         <y>40</y>
         <width>171</width>
         <height>31</height>
        </rect>
       </property>
       <property name="text">
-       <string>Device list</string>
+       <string>Model</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -228,7 +264,7 @@
      <widget class="QLabel" name="dev_usage_btn">
       <property name="geometry">
        <rect>
-        <x>390</x>
+        <x>610</x>
         <y>40</y>
         <width>181</width>
         <height>31</height>
@@ -423,6 +459,234 @@
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="dev_list_lbl_2">
+      <property name="geometry">
+       <rect>
+        <x>230</x>
+        <y>40</y>
+        <width>171</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Baud rate</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="dev_list_lbl_3">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>40</y>
+        <width>171</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Port</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QWidget" name="baud_rate_combo" native="true">
+      <property name="geometry">
+       <rect>
+        <x>220</x>
+        <y>80</y>
+        <width>191</width>
+        <height>251</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string/>
+      </property>
+      <property name="toolTipDuration">
+       <number>-1</number>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QComboBox" name="baud_rate_1">
+         <property name="editable">
+          <bool>false</bool>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <item>
+          <property name="text">
+           <string/>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="baud_rate_2">
+         <property name="editable">
+          <bool>false</bool>
+         </property>
+         <item>
+          <property name="text">
+           <string/>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="baud_rate_3">
+         <property name="editable">
+          <bool>false</bool>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <item>
+          <property name="text">
+           <string/>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="baud_rate_4">
+         <property name="editable">
+          <bool>false</bool>
+         </property>
+         <item>
+          <property name="text">
+           <string/>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="baud_rate_5">
+         <property name="editable">
+          <bool>false</bool>
+         </property>
+         <item>
+          <property name="text">
+           <string/>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="baud_rate_6">
+         <property name="editable">
+          <bool>false</bool>
+         </property>
+         <item>
+          <property name="text">
+           <string/>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="baud_rate_7">
+         <property name="editable">
+          <bool>false</bool>
+         </property>
+         <item>
+          <property name="text">
+           <string/>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="device_port" native="true">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>80</y>
+        <width>191</width>
+        <height>251</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <widget class="QComboBox" name="device_port_1">
+         <item>
+          <property name="text">
+           <string/>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="device_port_2">
+         <item>
+          <property name="text">
+           <string/>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="device_port_3">
+         <item>
+          <property name="text">
+           <string/>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="device_port_4">
+         <item>
+          <property name="text">
+           <string/>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="device_port_5">
+         <item>
+          <property name="text">
+           <string/>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="device_port_6">
+         <item>
+          <property name="text">
+           <string/>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="device_port_7">
+         <item>
+          <property name="text">
+           <string/>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QPushButton" name="test_connection">
+      <property name="geometry">
+       <rect>
+        <x>350</x>
+        <y>480</y>
+        <width>121</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Test connection</string>
       </property>
      </widget>
     </widget>

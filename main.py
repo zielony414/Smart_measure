@@ -22,15 +22,12 @@ if __name__ == "__main__":
 
     # start test button
     ui.start_test_btn.clicked.connect(ui_set.start_test)
-
+ 
     # device selection
-    ui.device1.currentIndexChanged.connect(ui_set.dev1_set)
-    ui.device2.currentIndexChanged.connect(ui_set.dev2_set)
-    ui.device3.currentIndexChanged.connect(ui_set.dev3_set)
-    ui.device4.currentIndexChanged.connect(ui_set.dev4_set)
-    ui.device5.currentIndexChanged.connect(ui_set.dev5_set)
-    ui.device6.currentIndexChanged.connect(ui_set.dev6_set)
-    ui.device7.currentIndexChanged.connect(ui_set.dev7_set)
+    ui_set.set_device_select_combos()
+
+    # test connection button
+    ui.test_connection.clicked.connect(ui_set.test_connection)
 
     # navigation
     ui.config_dev.clicked.connect(ui_set.next_page)

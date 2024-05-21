@@ -11,6 +11,7 @@ class Fluke_8846A:
         self.mode = mode #tryb działania multimetru (only info)
         self.instr.baud_rate = baud_rate
         self.instr.timeout = timeout
+        self.configure()
 
     '''Wstepna konfiguracja "dla bezpieczeństwa" w razie czego jakby na multimetrze były włączone inne funckje'''
     def configure(self):

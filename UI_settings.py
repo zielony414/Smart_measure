@@ -16,12 +16,16 @@ class UiSettings:
     def __init__(self, ui):
         self.ui = ui
         self.rm = pyvisa.ResourceManager()
+        self.list_ports = list(self.rm.list_resources())
         self.steps_number = 1  # number of all steps
         self.step_no = 0  # number of selected step
         self.freq = 1.0  # data gathering frequency
         self.time_per_step = 120  # time per step in seconds
         self.steps_list = []  # list of steps
         self.DeviceList = []  # list of devices
+
+        self.list_baud_rates = ["110", "300", "600", "1200", "2400", "4800", "9600", "14400", "19200", "38400", "57600"]  # list of baud rates for combos
+        self.list_available_devices = ["FLUKE8808A", "FLUKE8846A", "BKprecision8601", "TTI_CPX400DP"]  # list of devices for which the interface is created
 
         self.ui.step_num2_lbl.setEnabled(0)
         self.ui.step_num2_combo.setEnabled(0)
@@ -53,62 +57,36 @@ class UiSettings:
 
     # Scanning for new devices
     def refresh_devices(self):
-        try:
-            # Add scanning devices code
-            adress = self.rm.list_resources()
+        
+        self.rm = pyvisa.ResourceManager()
+        tmp_list = list(self.rm.list_resources())
 
-            adress = adress[::-1]
+        # remove not display ports
+        for address in self.list_ports:
+            if address not in tmp_list:
+                self.list_ports.remove(address)
+                self.ui.device_port_1.removeItem(self.ui.device_port_1.findText(address))
+                self.ui.device_port_2.removeItem(self.ui.device_port_2.findText(address))
+                self.ui.device_port_3.removeItem(self.ui.device_port_3.findText(address))
+                self.ui.device_port_4.removeItem(self.ui.device_port_4.findText(address))
+                self.ui.device_port_5.removeItem(self.ui.device_port_5.findText(address))
+                self.ui.device_port_6.removeItem(self.ui.device_port_6.findText(address))
+                self.ui.device_port_7.removeItem(self.ui.device_port_7.findText(address))
 
-            for i in adress:
-                print(i)
-                if i[:4] == "ASRL":
-                    # Próba połączenia z Multimetrem i zasilaczem
-                    Multimeter = FLUKE8808A.Fluke_8808A(i)
-                    PowerSupply = TTI_CPX400DP.TTI_CPX400DP(i)
-                    Multimeter.configure()
-                    name = Multimeter.it_is()
-                    name2 = PowerSupply.it_is()
-                    print(name)
-                    print(name2)
-                    available = True
-                    self.DeviceList.append((i, name, available))
-                    self.DeviceList.append((i, name2, available))
+        # add new open ports                
+        for address in tmp_list:
+            if address not in self.list_ports:
+                self.list_ports.append(address)
+                self.ui.device_port_1.addItem(address)
+                self.ui.device_port_2.addItem(address)
+                self.ui.device_port_3.addItem(address)
+                self.ui.device_port_4.addItem(address)
+                self.ui.device_port_5.addItem(address)
+                self.ui.device_port_6.addItem(address)
+                self.ui.device_port_7.addItem(address)    
 
-                elif i[:3] == "USB":
-                    # Próba połączenia z DCLoad
-                    DCLoad = BKprecision8601.BKprecision8601(i)
-                    name = DCLoad.it_is()
-                    available = True
-                    self.DeviceList.append((i, name, available))
 
-            print(self.DeviceList)
-        except Exception as e:
-            print(f"An error occurred: {e}")
-
-        # ui.refresh_dev_lbl.setText("Devices found: "+str(len(list)))
-
-        # return list
-        """
-        for i in adress:
-            try:
-                print(i)
-                instr = rm.open_resource(i)
-            except pyvisa.Error as e:
-                print("Błąd inicjalizacji urządzenia: ", e)
-
-            try:
-                answer = ""
-                instr.clear()
-
-                answer = instr.query("*IDN?")
-                print(answer)
-            except pyvisa.Error as e:
-                print("Błąd odczytu nazwy urządzenia: ", e)
-
-        """
-
-        # Starting test
-
+    # Starting test
     def start_test(self):
         for i in range(len(self.DeviceList)):
             if self.DeviceList[i][1] == "nazwa_BKprecision8601":
@@ -496,51 +474,94 @@ class UiSettings:
     7 - temp chamber
     """
 
-    def dev1_set(self):
-        text = self.ui.device1.currentText()
+    def set_device_select_combos(self):
 
-        for i in range(len(self.DeviceList)):
-            if self.DeviceList[i][1] == text and self.DeviceList[0][2]:
-                self.DeviceList[i].append("inlet_amm")
+        # combo boxes "Port"
+        self.ui.device_port_1.addItems(self.list_ports)
+        self.ui.device_port_2.addItems(self.list_ports)
+        self.ui.device_port_3.addItems(self.list_ports)
+        self.ui.device_port_4.addItems(self.list_ports)
+        self.ui.device_port_5.addItems(self.list_ports)
+        self.ui.device_port_6.addItems(self.list_ports)
+        #self.ui.device_port_7.addItems(self.list_ports)
 
-    def dev2_set(self):
-        text = self.ui.device2.currentText()
+        # combo boxes "Baud rate"
+        self.ui.baud_rate_1.addItems(self.list_baud_rates)
+        self.ui.baud_rate_2.addItems(self.list_baud_rates)
+        self.ui.baud_rate_3.addItems(self.list_baud_rates)
+        self.ui.baud_rate_4.addItems(self.list_baud_rates)
+        self.ui.baud_rate_5.addItem("-----")
+        self.ui.baud_rate_5.setCurrentIndex(1)
+        self.ui.baud_rate_6.addItem("-----")
+        self.ui.baud_rate_6.setCurrentIndex(1)
+        #self.ui.baud_rate_7.addItems(self.list_baud_rates)
 
-        for i in range(len(self.DeviceList)):
-            if self.DeviceList[i][1] == text and self.DeviceList[i][2]:
-                self.DeviceList[i].append("inlet_volt")
+        # combo boxes "Model"
+        self.ui.device_model1.addItems(self.list_available_devices[:2])
+        self.ui.device_model2.addItems(self.list_available_devices[:2])
+        self.ui.device_model3.addItems(self.list_available_devices[:2])
+        self.ui.device_model4.addItems(self.list_available_devices[:2])
+        self.ui.device_model5.addItem(self.list_available_devices[3])
+        self.ui.device_model6.addItem(self.list_available_devices[2])
+        #self.ui.device_model7.addItem()
 
-    def dev3_set(self):
-        text = self.ui.device3.currentText()
 
-        for i in range(len(self.DeviceList)):
-            if self.DeviceList[i][1] == text and self.DeviceList[i][2]:
-                self.DeviceList[i].append("out_amm")
+    def test_connection(self):
+        check = 0
+        list_models = []
+        list_models.append((self.ui.device_port_1.currentText(), self.ui.device_model1.currentText(), self.ui.baud_rate_1.currentText(), 1))
+        list_models.append((self.ui.device_port_2.currentText(), self.ui.device_model2.currentText(), self.ui.baud_rate_2.currentText(), 2))
+        list_models.append((self.ui.device_port_3.currentText(), self.ui.device_model3.currentText(), self.ui.baud_rate_3.currentText(), 3))
+        list_models.append((self.ui.device_port_4.currentText(), self.ui.device_model4.currentText(), self.ui.baud_rate_4.currentText(), 4))
+        list_models.append((self.ui.device_port_5.currentText(), self.ui.device_model5.currentText(), 0, 5))
+        list_models.append((self.ui.device_port_6.currentText(), self.ui.device_model6.currentText(), 0, 6))
+        #list_models.append((self.ui.device_port_7.currentText(), self.ui.device_model7.currentText(), self.ui.baud_rate_7.currentText()))
 
-    def dev4_set(self):
-        text = self.ui.device4.currentText()
+        for i in range(len(list_models)):
+            if list_models[i][1] == "FLUKE8808A":
+                try:
+                    meter = FLUKE8808A.Fluke_8808A(list_models[i][0], list_models[i][2])
+                    answer = meter.it_is()
+                    print(answer)
+                except Exception as e:
+                    print(f"Error with {i+1} device: " + str(e))
+                else:
+                    check += 1
+            elif list_models[i][1] == "FLUKE8846A":
+                try:
+                    meter = FLUKE8846A.Fluke_8846A(list_models[i][0], list_models[i][2])
+                    answer = meter.it_is()
+                    print(answer)
+                except Exception as e:
+                    print(f"Error with {i+1} device: " + str(e))
+                else:
+                    check += 1
+            elif list_models[i][1] == "TTI_CPX400DP":
+                try:
+                    dcload = TTI_CPX400DP.TTI_CPX400DP(list_models[i][0])
+                    answer = dcload.it_is()
+                    print(answer)
+                except Exception as e:
+                    print(f"Error with {i+1} device: " + str(e))
+                else:
+                    check += 1
+            elif list_models[i][1] == "BKprecision8601":
+                try:
+                    power = BKprecision8601.BKprecision8601(list_models[i][0])
+                    answer = power.it_is()
+                    print(answer)
+                except Exception as e:
+                    print(f"Error with {i+1} device: " + str(e))
+                else:
+                    check += 1
+        if check >= 6:
+            self.DeviceList = list_models
+            return 1  # test passed
+        else:
+            return 0  # test failed
+                
 
-        for i in range(len(self.DeviceList)):
-            if self.DeviceList[i][1] == text and self.DeviceList[i][2]:
-                self.DeviceList[i].append("out_volt")
 
-    def dev5_set(self):
-        text = self.ui.device4.currentText()
+            
+        
 
-        for i in range(len(self.DeviceList)):
-            if self.DeviceList[i][1] == text and self.DeviceList[i][2]:
-                self.DeviceList[i].append("DCL")
-
-    def dev6_set(self):
-        text = self.ui.device4.currentText()
-
-        for i in range(len(self.DeviceList)):
-            if self.DeviceList[i][1] == text and self.DeviceList[i][2]:
-                self.DeviceList[i].append("PSU")
-
-    def dev7_set(self):
-        text = self.ui.device4.currentText()
-
-        for i in range(len(self.DeviceList)):
-            if self.DeviceList[i][1] == text and self.DeviceList[i][2]:
-                self.DeviceList[i].append("TempChamber")
