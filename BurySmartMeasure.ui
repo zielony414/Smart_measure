@@ -681,12 +681,12 @@
        <rect>
         <x>350</x>
         <y>480</y>
-        <width>121</width>
+        <width>161</width>
         <height>41</height>
        </rect>
       </property>
       <property name="text">
-       <string>Test connection</string>
+       <string>Test connection and save</string>
       </property>
      </widget>
     </widget>
