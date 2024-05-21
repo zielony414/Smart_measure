@@ -298,7 +298,7 @@ class Ui_BurySmartMeasureClass(object):
         self.device_port_7.setItemText(0, "")
         self.verticalLayout_4.addWidget(self.device_port_7)
         self.test_connection = QtWidgets.QPushButton(self.device_select)
-        self.test_connection.setGeometry(QtCore.QRect(350, 480, 121, 41))
+        self.test_connection.setGeometry(QtCore.QRect(350, 480, 161, 41))
         self.test_connection.setObjectName("test_connection")
         self.tabWidget.addTab(self.device_select, "")
         self.amp_and_volt_conf = QtWidgets.QWidget()
@@ -908,6 +908,7 @@ class Ui_BurySmartMeasureClass(object):
         self.retranslateUi(BurySmartMeasureClass)
         self.tabWidget.setCurrentIndex(0)
         self.baud_rate_1.setCurrentIndex(0)
+        self.baud_rate_3.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(BurySmartMeasureClass)
 
     def retranslateUi(self, BurySmartMeasureClass):
@@ -931,7 +932,7 @@ class Ui_BurySmartMeasureClass(object):
         self.freq_lbl.setText(_translate("BurySmartMeasureClass", "Data gathering frequency [s]: "))
         self.dev_list_lbl_2.setText(_translate("BurySmartMeasureClass", "Baud rate"))
         self.dev_list_lbl_3.setText(_translate("BurySmartMeasureClass", "Port"))
-        self.test_connection.setText(_translate("BurySmartMeasureClass", "Test connection"))
+        self.test_connection.setText(_translate("BurySmartMeasureClass", "Test connection and save"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.device_select), _translate("BurySmartMeasureClass", "Device select"))
         self.amp_inlet_lbl.setText(_translate("BurySmartMeasureClass", "Ammeter for inlet current:"))
         self.volt_inlet_lbl.setText(_translate("BurySmartMeasureClass", "Voltmeter for inlet current:"))

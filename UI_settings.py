@@ -3,6 +3,7 @@ import os
 import shutil
 import ConfigData
 import BKprecision8601
+import Small_window as sm
 import FLUKE8808A
 import FLUKE8846A
 import TTI_CPX400DP
@@ -88,9 +89,7 @@ class UiSettings:
                 self.ui.device_port_7.addItem(address)    
 
 
-<<<<<<< Updated upstream
     # Starting test
-=======
     # (port_com, nazwa, baudrate, przeznaczenie)
     """
        1 - inlet amm
@@ -102,7 +101,6 @@ class UiSettings:
        7 - temp chamber
        """
     # TODO dodać walidację, jeżeli lista urządzeń jest pusta
->>>>>>> Stashed changes
     def start_test(self):
 
         self.ui.state_lbl.setText("Setting devices...")
@@ -254,8 +252,6 @@ class UiSettings:
 
         if self.ui.delete_txt_chkbox.isChecked():
             shutil.rmtree(folder_name)
-
-
 
 
     # Switching to next tab
@@ -491,8 +487,7 @@ class UiSettings:
             self.ui.steps_textEdit.append(
                 "Step " + str(i + 1) + ": PSU " + str(step.psu_volt) + step.psu_volt_unit + ", " + str(
                     step.psu_amm) + step.psu_amm_unit + "; DCL " + ", start:" + str(
-                    step.dcl_start) + unit_list + " step " + str(step.dcl_step) + unit_list + " every " + str(
-                    step.dcl_time) + "s, ")
+                    step.dcl_start) + unit_list + " step " + str(step.dcl_step) + unit_list + " every " + "dcl_time" + "s, ")
 
             if not step.chb_allow_temp_err:
                 temp_err_text = "Temp err: off"
@@ -509,7 +504,7 @@ class UiSettings:
                     "Step " + str(i + 1) + ": PSU " + str(step.psu_volt) + step.psu_volt_unit +
                     ", " + str(step.psu_amm) + step.psu_amm_unit + "; DCL " + ", start:" + str(
                         step.dcl_start) + unit_list + " step " + str(step.dcl_step) + unit_list + " every " + str(
-                        step.dcl_time) + "s, CHB: " + str(step.chb_temp) + "°C, " + str(step.chb_humidity) + "%, " +
+                        "dcl_time") + "s, CHB: " + str(step.chb_temp) + "°C, " + str(step.chb_humidity) + "%, " +
                     temp_err_text + ", " + humidity_err_text)
             else:
                 self.ui.steps_textEdit2.append(
@@ -618,6 +613,13 @@ class UiSettings:
         self.ui.device_model6.addItem(self.list_available_devices[2])
         #self.ui.device_model7.addItem()
 
+    def check_unique_texts(self, *texts):
+        # Tworzymy zbiór z podanych tekstów
+        unique_texts = set(texts)
+    
+        # Sprawdzamy, czy rozmiar zbioru jest równy liczbie podanych tekstów
+        # jeśli teksty są unikalne zwraca true
+        return len(unique_texts) == len(texts)
 
     def test_connection(self):
         check = 0
@@ -629,24 +631,40 @@ class UiSettings:
         list_models.append((self.ui.device_port_5.currentText(), self.ui.device_model5.currentText(), 0, 5))
         list_models.append((self.ui.device_port_6.currentText(), self.ui.device_model6.currentText(), 0, 6))
         #list_models.append((self.ui.device_port_7.currentText(), self.ui.device_model7.currentText(), self.ui.baud_rate_7.currentText()))
+        
+        # protection against starting with too few devices
+        for port in list_models:
+            if port[0] == '':
+                news = sm.Small_window()
+                news.show_warning("Devices are missing! Connect more.")
+                return 0
 
+        # protection against connecting to one port several times
+        if not self.check_unique_texts(list_models[0][0], list_models[1][0], list_models[2][0], list_models[3][0], list_models[4][0], list_models[5][0]):
+            news = sm.Small_window()
+            news.show_warning("You cannot connect to one port twice! Fix ports.")
+            return 0
+
+        # test connection and waiting for it_is() to be returned from each device
         for i in range(len(list_models)):
             if list_models[i][1] == "FLUKE8808A":
                 try:
-                    meter = FLUKE8808A.Fluke_8808A(list_models[i][0], list_models[i][2])
+                    meter = FLUKE8808A.Fluke_8808A(list_models[i][0], int(list_models[i][2]))
                     answer = meter.it_is()
                     print(answer)
                 except Exception as e:
-                    print(f"Error with {i+1} device: " + str(e))
+                    news = sm.Small_window()
+                    news.show_error(f"Error with {i+1} device: " + str(e))
                 else:
-                    check += 1
+                   check += 1
             elif list_models[i][1] == "FLUKE8846A":
                 try:
-                    meter = FLUKE8846A.Fluke_8846A(list_models[i][0], list_models[i][2])
+                    meter = FLUKE8846A.Fluke_8846A(list_models[i][0], int(list_models[i][2]))
                     answer = meter.it_is()
                     print(answer)
                 except Exception as e:
-                    print(f"Error with {i+1} device: " + str(e))
+                    news = sm.Small_window()
+                    news.show_error(f"Error with {i+1} device: " + str(e))
                 else:
                     check += 1
             elif list_models[i][1] == "TTI_CPX400DP":
@@ -655,7 +673,8 @@ class UiSettings:
                     answer = dcload.it_is()
                     print(answer)
                 except Exception as e:
-                    print(f"Error with {i+1} device: " + str(e))
+                    news = sm.Small_window()
+                    news.show_error(f"Error with {i+1} device: " + str(e))
                 else:
                     check += 1
             elif list_models[i][1] == "BKprecision8601":
@@ -664,9 +683,12 @@ class UiSettings:
                     answer = power.it_is()
                     print(answer)
                 except Exception as e:
-                    print(f"Error with {i+1} device: " + str(e))
+                    news = sm.Small_window()
+                    news.show_error(f"Error with {i+1} device: " + str(e))
                 else:
                     check += 1
+
+        # if connection passed with 6 devices function return good list devices
         if check >= 6:
             self.DeviceList = list_models
             return 1  # test passed

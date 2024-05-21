@@ -2,12 +2,15 @@ import pyvisa
 import asyncio
 import time
 import datetime
+import Small_window as sm
+import re
 
 class Fluke_8846A:
 
     '''Konstruktor ustawiajacy wszystkie najważniejsze pozycje'''
     def __init__(self, port, baud_rate=9600, mode=1, timeout=5000):
         self.instr = pyvisa.ResourceManager().open_resource(port)
+        self.port = port
         self.mode = mode #tryb działania multimetru (only info)
         self.instr.baud_rate = baud_rate
         self.instr.timeout = timeout
@@ -19,7 +22,17 @@ class Fluke_8846A:
         time.sleep(1)
         self.instr.write("L1\n") # setting meter's mode to language 8846
         time.sleep(1)
-        
+
+    def extract_number(self, text):
+        # Wyrażenie regularne do wyszukania liczby w notacji wykładniczej
+        match = re.search(r'([+-]?\d*\.?\d+([eE][+-]?\d+)?)', text)
+        if match:
+            return match.group(0)
+        else:
+            raise ValueError("No number found in the text")
+
+    def convert_scientific_to_float(self, sci_num):
+        return float(sci_num) 
 
     '''The main method for starting measurements with time specification'''
     def start_measure(self, duration, gather_freq):
@@ -46,8 +59,8 @@ class Fluke_8846A:
         return 1
 
     '''The main method for starting measurements with number of measurments'''
-    def start_measure2(self, number_of_measurements: int):
-        
+    def start_measure2(self, number_of_measurements: int, file):
+        measurment_list = []
         gather_freq = 1
         self.instr.write("TRIG:SOUR BUS\n")
         self.instr.write("TRIG:COUN 1\n")
@@ -56,15 +69,26 @@ class Fluke_8846A:
         self.instr.write("INIT\n")
         time.sleep(1)
         self.instr.write("*TRG\n")
-        time.sleep(gather_freq * number_of_measurements);
+        time.sleep(gather_freq * number_of_measurements)
+        #await asyncio.sleep(gather_freq* number_of_measurements)
+
         reader = self.instr.query("FETCh?")
+        measurment_list = reader.split(',')
 
-        czas = datetime.datetime.now().strftime("%X.%f")[:-4]
-        string = str(czas + " " + reader)
+        #  processing data and calculating the average of the measurements
+        sum = 0.00
+        for number in measurment_list:
+            sci_number = self.extract_number(number)
+            float_number = self.convert_scientific_to_float(sci_number)
+            sum += float_number
+        time_captured = datetime.datetime.now().strftime("%X.%f")[:-4]
+        string = str(time_captured + " " + str(float(sum/number_of_measurements)))
 
+        # the average is saved to a file with the date
         print(string)
         file.write(string)
-        #await asyncio.sleep(gather_freq)
+        
+
         return 1
 
     '''The method resets the measuring device'''
@@ -80,7 +104,8 @@ class Fluke_8846A:
         try:
             answer = self.instr.query("*IDN?")
         except Exception as err:
-            print(f"ERROR Unexpected {err=}, {type(err)=}")
+            news = sm.Small_window()
+            news.show_error(f"ERROR {self.port} Fluke8846A Unexpected {err=}, {type(err)=}")
         return answer
 
     '''Metoda ustawiajaca multimetr w tryb voltomierza'''
@@ -101,6 +126,3 @@ class Fluke_8846A:
     def clear_buffer(self):
         self.instr.write("*CLS\n")
         return 1
-
-
-
