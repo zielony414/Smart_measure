@@ -36,7 +36,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <property name="elideMode">
      <enum>Qt::ElideNone</enum>
@@ -344,13 +344,13 @@
        </font>
       </property>
       <property name="text">
-       <string>Time per step:               minutes,              seconds</string>
+       <string>Number of measurments per averaged result:</string>
       </property>
      </widget>
-     <widget class="QSpinBox" name="timePS_min_spb">
+     <widget class="QSpinBox" name="avg_res_no_spb">
       <property name="geometry">
        <rect>
-        <x>330</x>
+        <x>550</x>
         <y>380</y>
         <width>61</width>
         <height>31</height>
@@ -362,43 +362,13 @@
        </font>
       </property>
       <property name="minimum">
-       <number>0</number>
+       <number>1</number>
       </property>
       <property name="maximum">
-       <number>9999</number>
-      </property>
-      <property name="stepType">
-       <enum>QAbstractSpinBox::DefaultStepType</enum>
+       <number>2137</number>
       </property>
       <property name="value">
-       <number>2</number>
-      </property>
-      <property name="displayIntegerBase">
        <number>10</number>
-      </property>
-     </widget>
-     <widget class="QSpinBox" name="timePS_sec_spb">
-      <property name="geometry">
-       <rect>
-        <x>470</x>
-        <y>380</y>
-        <width>51</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-       </font>
-      </property>
-      <property name="minimum">
-       <number>0</number>
-      </property>
-      <property name="maximum">
-       <number>59</number>
-      </property>
-      <property name="value">
-       <number>0</number>
       </property>
      </widget>
      <widget class="QDoubleSpinBox" name="freq_spb">
@@ -428,16 +398,16 @@
        <string> s</string>
       </property>
       <property name="minimum">
-       <double>0.010000000000000</double>
+       <double>0.500000000000000</double>
       </property>
       <property name="maximum">
-       <double>99.000000000000000</double>
+       <double>50.000000000000000</double>
       </property>
       <property name="singleStep">
        <double>0.500000000000000</double>
       </property>
       <property name="value">
-       <double>2.000000000000000</double>
+       <double>1.000000000000000</double>
       </property>
      </widget>
      <widget class="QLabel" name="freq_lbl">
@@ -1190,7 +1160,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Exp. current change in step: 0.0 A</string>
+        <string>Current change in step: 0.0 A</string>
        </property>
       </widget>
       <widget class="QDoubleSpinBox" name="DCload_start_spb">
@@ -1238,7 +1208,7 @@
         <double>0.000000000000000</double>
        </property>
       </widget>
-      <widget class="QDoubleSpinBox" name="DCload_step_spb">
+      <widget class="QDoubleSpinBox" name="DCload_end_spb">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -1301,7 +1271,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Current change step:</string>
+        <string>End current:</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1369,7 +1339,7 @@
         <string>DC load mode:</string>
        </property>
       </widget>
-      <widget class="QDoubleSpinBox" name="DCload_time_spb">
+      <widget class="QDoubleSpinBox" name="DCload_steps_spb">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -1377,7 +1347,7 @@
         <rect>
          <x>210</x>
          <y>131</y>
-         <width>121</width>
+         <width>61</width>
          <height>31</height>
         </rect>
        </property>
@@ -1396,7 +1366,10 @@
         <enum>QAbstractSpinBox::PlusMinus</enum>
        </property>
        <property name="suffix">
-        <string> s</string>
+        <string/>
+       </property>
+       <property name="decimals">
+        <number>0</number>
        </property>
        <property name="minimum">
         <double>0.000000000000000</double>
@@ -1405,7 +1378,7 @@
         <double>185.000000000000000</double>
        </property>
        <property name="singleStep">
-        <double>0.100000000000000</double>
+        <double>1.000000000000000</double>
        </property>
        <property name="value">
         <double>10.000000000000000</double>
@@ -1429,7 +1402,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Time per change:</string>
+        <string>Number of steps:</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1856,6 +1829,9 @@
       </property>
      </widget>
      <widget class="QPushButton" name="next_step_btn">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>670</x>
@@ -2056,6 +2032,9 @@
       </property>
      </widget>
      <widget class="QCheckBox" name="use_temp_chamber_chkbox">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>20</x>
@@ -2073,6 +2052,9 @@
       </property>
       <property name="text">
        <string>Use temperature chamber</string>
+      </property>
+      <property name="checkable">
+       <bool>false</bool>
       </property>
      </widget>
      <widget class="Line" name="line2">
@@ -2289,6 +2271,9 @@
       </property>
      </widget>
      <widget class="QPushButton" name="save_cfg_btn2">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>670</x>

@@ -1,6 +1,7 @@
 import pyvisa
 import os
 import shutil
+import asyncio
 import ConfigData
 import BKprecision8601
 import Small_window as sm
@@ -12,11 +13,6 @@ from PyQt5.QtWidgets import QFileDialog
 
 
 class UiSettings:
-
-    # TODO dodać sprawdzenie czy DCLoad time per change nie jest większy niż time per step
-    # TODO dodać opcję ustawienia stałej wartości bez zmiany w DCLoad
-    # TODO dodać informację o tym że na multimetrach musi być ustawiony domyślny baud rate
-
     def __init__(self, ui):
         self.ui = ui
         self.rm = pyvisa.ResourceManager()
@@ -28,6 +24,7 @@ class UiSettings:
         self.steps_list = []  # list of steps
         self.DeviceList = []  # list of devices
         self.save_path = None  # path to save files
+        self.measurements_per_average = 10  # number of measurements per average
 
         self.list_baud_rates = ["110", "300", "600", "1200", "2400", "4800", "9600", "14400", "19200", "38400",
                                 "57600"]  # list of baud rates for combos
@@ -104,6 +101,9 @@ class UiSettings:
        6 - power supply
        7 - temp chamber
        """
+    def run_start_test(self):
+        asyncio.run(self.start_test())
+
     def find_path_clicked(self):
         options = QFileDialog.Options()
         self.save_path = QFileDialog.getExistingDirectory(None, "Select Directory", "",
@@ -113,12 +113,12 @@ class UiSettings:
             print(self.save_path)
             self.ui.save_path_ledit.setText(self.save_path)
 
-    def start_test(self):
-
+    async def start_test(self):
         self.ui.state_lbl.setText("Setting devices...")
 
         if len(self.DeviceList) < 6:
-            self.ui.state_lbl.setText("Test devices first!")
+            sm.Small_window().show_warning("Connect and test devices first!")
+            self.ui.state_lbl.setText(" ")
             return
 
         # Tworzenie forlderu badania
@@ -233,14 +233,13 @@ class UiSettings:
             out_volt_file.write("Inlet ammeter")
 
             # Setting DCLoad
-            if "CC" in self.steps_list[i].dcl_step:
+            if "CC" in self.steps_list[i].dcl_end:
                 devices["DCload"].set_mode("CURR")
                 devices["DCload"].set_current(self.steps_list[i].dcl_start)
-            elif "CV" in self.steps_list[i].dcl_step:
+            elif "CV" in self.steps_list[i].dcl_end:
                 devices["DCload"].set_mode("VOLT")
-                devices["DCload"].set_current(self.steps_list[i].dcl_start)
+                devices["DCload"].set_voltage(self.steps_list[i].dcl_start)
 
-            devices["DCload"].set_current(self.steps_list[i].dcl_start)
             devices["DCload"].power_on()
 
             # Setting PSU
@@ -249,10 +248,20 @@ class UiSettings:
             devices["power_supply"].output_on()
 
             for j in range(self.steps_list[i].dcl_changes_no):
-                devices["inlet_amm"].start_measure2(self.steps_list[i].dcl_changes_no, inlet_amm_file)
+
+
+                """devices["inlet_amm"].start_measure2(self.steps_list[i].dcl_changes_no, inlet_amm_file)
                 devices["inlet_volt"].start_measure2(self.steps_list[i].dcl_changes_no, inlet_volt_file)
                 devices["out_amm"].start_measure2(self.steps_list[i].dcl_changes_no, out_amm_file)
-                devices["out_volt"].start_measure2(self.steps_list[i].dcl_changes_no, out_volt_file)
+                devices["out_volt"].start_measure2(self.steps_list[i].dcl_changes_no, out_volt_file)"""
+
+                tasks = [
+                    devices["inlet_amm"].start_measure2(self.measurements_per_average, inlet_amm_file, self.freq),
+                    devices["inlet_volt"].start_measure2(self.measurements_per_average, inlet_volt_file, self.freq),
+                    devices["out_amm"].start_measure2(self.measurements_per_average, out_amm_file, self.freq),
+                    devices["out_volt"].start_measure2(self.measurements_per_average, out_volt_file, self.freq)]
+
+                await asyncio.gather(*tasks)
 
             devices["DCload"].power_off()
             devices["power_supply"].output_off()
@@ -441,8 +450,8 @@ class UiSettings:
         self.ui.PSU_amp_unit_combo.setCurrentText(step.psu_volt_unit)
 
         self.ui.DCload_mode_combo.setCurrentText(step.dcl_mode)
-        self.ui.DCload_step_spb.setValue(step.dcl_step)
-        self.ui.DCload_time_spb.setValue(step.dcl_changes_no)
+        self.ui.DCload_end_spb.setValue(step.dcl_end)
+        self.ui.DCload_steps_spb.setValue(step.dcl_changes_no)
         self.ui.DCload_start_spb.setValue(step.dcl_start)
         self.DCload_mode_change()
 
@@ -478,15 +487,14 @@ class UiSettings:
             self.ui.step_num1_combo.setCurrentIndex(self.ui.step_num1_combo.currentIndex() + 1)
             self.step_change(self.ui.step_num1_combo.currentIndex())
 
-    def tps_change(self):
-        mins = self.ui.timePS_min_spb.value() * 60
-        sec = self.ui.timePS_sec_spb.value()
+    def avg_res_no_spb_change(self):
+        self.measurements_per_average = self.ui.avg_res_no_spb.value()
+        print(self.measurements_per_average)
 
-        self.time_per_step = mins + sec
-        self.chamber_temp_calc()
 
     def freq_change(self):
         self.freq = self.ui.freq_spb.value()
+        print(self.freq)
 
     # outputting data to the screen
     def steps_output(self):
@@ -502,9 +510,9 @@ class UiSettings:
 
             self.ui.steps_textEdit.append(
                 "Step " + str(i + 1) + ": PSU " + str(step.psu_volt) + step.psu_volt_unit + ", " + str(
-                    step.psu_amm) + step.psu_amm_unit + "; DCL " + ", start:" + str(
-                    step.dcl_start) + unit_list + " step " + str(
-                    step.dcl_step) + unit_list + " every " + "dcl_time" + "s, ")
+                    step.psu_amm) + step.psu_amm_unit + "; DCL: start:" + str(
+                    step.dcl_start) + unit_list + " end: " + str(
+                    step.dcl_end) + unit_list + ", jumps: " + str(step.dcl_changes_no))
 
             if not step.chb_allow_temp_err:
                 temp_err_text = "Temp err: off"
@@ -520,38 +528,39 @@ class UiSettings:
                 self.ui.steps_textEdit2.append(
                     "Step " + str(i + 1) + ": PSU " + str(step.psu_volt) + step.psu_volt_unit +
                     ", " + str(step.psu_amm) + step.psu_amm_unit + "; DCL " + ", start:" + str(
-                        step.dcl_start) + unit_list + " step " + str(step.dcl_step) + unit_list + " every " + str(
+                        step.dcl_start) + unit_list + " stop: " + str(step.dcl_end) + unit_list + " changes: " + str(
                         "dcl_time") + "s, CHB: " + str(step.chb_temp) + "°C, " + str(step.chb_humidity) + "%, " +
                     temp_err_text + ", " + humidity_err_text)
             else:
                 self.ui.steps_textEdit2.append(
                     "Step " + str(i + 1) + ": PSU " + str(step.psu_volt) + step.psu_volt_unit + ", " + str(
                         step.psu_amm) + step.psu_amm_unit + "; DCL " + ", start:" + str(
-                        step.dcl_start) + unit_list + " step " + str(step.dcl_step) + unit_list + " changes: " + str(
+                        step.dcl_start) + unit_list + " stop: " + str(step.dcl_end) + unit_list + " changes: " + str(
                         step.dcl_changes_no) + "s, CHB: " + str(step.chb_start_temp) + "°C, " + str(step.chb_temp_step) +
                     "°C/min, " + temp_err_text + ", " + humidity_err_text)
 
     def DCload_mode_change(self):
         if self.ui.DCload_mode_combo.currentText() == "Constant current (CC)":
-            self.ui.DCload_step_spb.setSuffix(" A/Min")
+            self.ui.DCload_end_spb.setSuffix(" A")
             self.ui.DCload_start_lbl.setText("Start current:")
+            self.ui.DCload_step_lbl.setText("End current:")
             self.ui.DCload_start_spb.setSuffix(" A")
-            if self.ui.DCload_time_spb.value() == 0:
+            if self.ui.DCload_steps_spb.value() == 0:
                 exp_value_change = 0
             else:
-                exp_value_change = round(
-                    (self.time_per_step / self.ui.DCload_time_spb.value()) * self.ui.DCload_step_spb.value(), 2)
-            self.ui.DCload_step_info_lbl.setText("Exp. current change in step: " + str(exp_value_change) + " A")
+                exp_value_change = round((self.ui.DCload_end_spb.value() - self.ui.DCload_start_spb.value())/self.ui.DCload_steps_spb.value(), 2)
+            self.ui.DCload_step_info_lbl.setText("Value change per DCLoad step: " + str(exp_value_change) + " A")
 
         elif self.ui.DCload_mode_combo.currentText() == "Constant voltage (CV)":
-            self.ui.DCload_step_spb.setSuffix(" V/Min")
+            self.ui.DCload_end_spb.setSuffix(" V")
             self.ui.DCload_start_lbl.setText("Start voltage:")
+            self.ui.DCload_step_lbl.setText("End voltage:")
             self.ui.DCload_start_spb.setSuffix(" V")
-            if self.ui.DCload_time_spb.value() == 0:
+            if self.ui.DCload_steps_spb.value() == 0:
                 exp_value_change = 0
             else:
                 exp_value_change = round(
-                    (self.time_per_step / self.ui.DCload_time_spb.value()) * self.ui.DCload_step_spb.value(), 2)
+                    (self.time_per_step / self.ui.DCload_steps_spb.value()) * self.ui.DCload_end_spb.value(), 2)
             self.ui.DCload_step_info_lbl.setText(
                 "Exp. current change in step: " + str(round(exp_value_change, 2)) + " V")
 
@@ -567,8 +576,8 @@ class UiSettings:
         self.steps_list[self.step_no].psu_amm_unit = self.ui.PSU_amp_unit_combo.currentText()
 
         self.steps_list[self.step_no].dcl_mode = self.ui.DCload_mode_combo.currentText()
-        self.steps_list[self.step_no].dcl_step = round(float(self.ui.DCload_step_spb.value()), 4)
-        self.steps_list[self.step_no].dcl_changes_no = round(float(self.ui.DCload_time_spb.value()), 2)
+        self.steps_list[self.step_no].dcl_end = round(float(self.ui.DCload_end_spb.value()), 4)
+        self.steps_list[self.step_no].dcl_changes_no = round(float(self.ui.DCload_steps_spb.value()), 2)
         self.steps_list[self.step_no].dcl_start = round(float(self.ui.DCload_start_spb.value()), 4)
 
         self.steps_list[self.step_no].use_chamber = self.ui.use_temp_chamber_chkbox.isChecked()

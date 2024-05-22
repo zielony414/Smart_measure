@@ -1,4 +1,5 @@
 import sys
+import asyncio
 from PyQt5 import QtWidgets
 import UI_settings
 from BurySmartMeasure import Ui_BurySmartMeasureClass
@@ -21,7 +22,7 @@ if __name__ == "__main__":
     ui.refresh_dev_btn.clicked.connect(ui_set.refresh_devices)
 
     # start test button
-    ui.start_test_btn.clicked.connect(ui_set.start_test)
+    ui.start_test_btn.clicked.connect(ui_set.run_start_test)
  
     # device selection
     ui_set.set_device_select_combos()
@@ -44,8 +45,7 @@ if __name__ == "__main__":
     ui.gr_humidity_step_spb.valueChanged.connect(ui_set.chamber_temp_calc)
 
     # steps
-    ui.timePS_min_spb.valueChanged.connect(ui_set.tps_change)
-    ui.timePS_sec_spb.valueChanged.connect(ui_set.tps_change)
+    ui.avg_res_no_spb.valueChanged.connect(ui_set.avg_res_no_spb_change)
     ui.steps_spb.valueChanged.connect(ui_set.steps_set)
     ui.step_num1_combo.currentIndexChanged.connect(ui_set.step_btn1_clicked)
     ui.step_num2_combo.currentIndexChanged.connect(ui_set.step_btn2_clicked)
@@ -55,8 +55,9 @@ if __name__ == "__main__":
 
     # DC load
     ui.DCload_mode_combo.currentIndexChanged.connect(ui_set.DCload_mode_change)
-    ui.DCload_step_spb.valueChanged.connect(ui_set.DCload_mode_change)
-    ui.DCload_time_spb.valueChanged.connect(ui_set.DCload_mode_change)
+    ui.DCload_steps_spb.valueChanged.connect(ui_set.DCload_mode_change)
+    ui.DCload_start_spb.valueChanged.connect(ui_set.DCload_mode_change)
+    ui.DCload_end_spb.valueChanged.connect(ui_set.DCload_mode_change)
     ui.save_cfg_btn1.clicked.connect(ui_set.save_config)
     ui.save_cfg_btn2.clicked.connect(ui_set.save_config)
 

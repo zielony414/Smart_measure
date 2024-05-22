@@ -25,9 +25,9 @@ class ConfigData:
         self.psu_amm_unit = 'A'
 
         self.dcl_mode = "Constant current (CC)"
-        self.dcl_step = 5.0
-        self.dcl_changes_no = 5
-        self.dcl_start = 1.0
+        self.dcl_end = 0.0
+        self.dcl_changes_no = 10
+        self.dcl_start = 0.0
 
         self.chb_temp = 20.0
         self.chb_humidity = 40.0
