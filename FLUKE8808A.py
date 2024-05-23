@@ -75,12 +75,12 @@ class Fluke_8808A:
         return 1
     
     '''The main method for starting measurements with number of measurments'''
-    async def start_measure2(self, number_of_measurements: int, file):
+    async def start_measure2(self, number_of_measurements: int, file, freq=1):
         #start_time = time.time()
         measurement_list = []
         # clearing the communication buffer
         self.instr.clear()
-        gather_freq = 1
+        gather_freq = freq
         #duration = number_of_measurements * gather_freq;
         # a while loop that runs for a specified period of time
         for i in range(number_of_measurements):

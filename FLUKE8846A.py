@@ -59,9 +59,9 @@ class Fluke_8846A:
         return 1
 
     '''The main method for starting measurements with number of measurments'''
-    def start_measure2(self, number_of_measurements: int, file):
+    async def start_measure2(self, number_of_measurements: int, file, freq=1):
         measurment_list = []
-        gather_freq = 1
+        gather_freq = freq
         self.instr.write("TRIG:SOUR BUS\n")
         self.instr.write("TRIG:COUN 1\n")
         self.instr.write(f"TRIG:DEL {gather_freq}\n")
@@ -69,8 +69,8 @@ class Fluke_8846A:
         self.instr.write("INIT\n")
         time.sleep(1)
         self.instr.write("*TRG\n")
-        time.sleep(gather_freq * number_of_measurements)
-        #await asyncio.sleep(gather_freq* number_of_measurements)
+        #time.sleep(gather_freq * number_of_measurements)
+        await asyncio.sleep(gather_freq * number_of_measurements)
 
         reader = self.instr.query("FETCh?")
         measurment_list = reader.split(',')
@@ -88,7 +88,6 @@ class Fluke_8846A:
         print(string)
         file.write(string)
         
-
         return 1
 
     '''The method resets the measuring device'''

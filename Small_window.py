@@ -1,5 +1,6 @@
-import sys
+import os
 from PyQt5.QtWidgets import QApplication, QMessageBox
+from PyQt5.QtCore import Qt
 
 class Small_window():
 
@@ -9,6 +10,17 @@ class Small_window():
         msg.setWindowTitle("Error")
         msg.setText("An error occured: " + text)
         msg.setStandardButtons(QMessageBox.Ok)
+
+        # Get the directory of the current script
+        script_dir = os.path.dirname(__file__)
+        # Construct the full path to the image
+        image_path = os.path.join(script_dir, "qrcode.png")
+    
+        # Create an HTML string that includes the image
+        html_text = f'<img src="{image_path}" width="200" height="200"><br>'
+        msg.setInformativeText(html_text)
+        msg.setTextFormat(Qt.RichText)
+
         msg.exec_()
 
     def show_warning(self, text):

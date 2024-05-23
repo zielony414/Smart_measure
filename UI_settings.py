@@ -125,6 +125,7 @@ class UiSettings:
         folder_name = self.ui.test_name_ledit.text()
 
         if folder_name == "":
+            sm.Small_window().show_warning("No test name!")
             self.ui.state_lbl.setText("No test name!")
             self.ui.estimated_time_lbl.setText("")
             return
