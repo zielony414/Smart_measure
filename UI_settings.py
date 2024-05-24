@@ -11,6 +11,7 @@ import TTI_CPX400DP
 import CTS_T6550
 from PyQt5.QtWidgets import QFileDialog
 
+#TODO dodać informacje o skanowaniu w trakcie dzialania funkcji
 
 class UiSettings:
     def __init__(self, ui):
@@ -62,7 +63,7 @@ class UiSettings:
     # Scanning for new devices
     def refresh_devices(self):
 
-        self.rm = pyvisa.ResourceManager()
+        #self.rm = pyvisa.ResourceManager()
         tmp_list = list(self.rm.list_resources())
 
         # remove not display ports
@@ -116,6 +117,7 @@ class UiSettings:
     async def start_test(self):
         self.ui.state_lbl.setText("Setting devices...")
 
+
         if len(self.DeviceList) < 6:
             sm.Small_window().show_warning("Connect and test devices first!")
             self.ui.state_lbl.setText(" ")
@@ -142,49 +144,50 @@ class UiSettings:
         devices = {}
 
         for i in range(len(self.DeviceList)):
+            print("Baud rate: " + str(self.DeviceList[i][2]))
             if "8601" in self.DeviceList[i][1]:
                 DCLoad = BKprecision8601.BKprecision8601(self.DeviceList[i][0])
                 devices["DCload"] = DCLoad
 
             elif "8808A" in self.DeviceList[i][1]:
                 if self.DeviceList[i][3] == 1:
-                    inlet_amm = FLUKE8808A.Fluke_8808A(self.DeviceList[i][0], self.DeviceList[i][2])
+                    inlet_amm = FLUKE8808A.Fluke_8808A(self.DeviceList[i][0], int(self.DeviceList[i][2]))
                     inlet_amm.configure()
                     devices["inlet_amm"] = inlet_amm
 
                 elif self.DeviceList[i][3] == 2:
-                    inlet_volt = FLUKE8808A.Fluke_8808A(self.DeviceList[i][0], self.DeviceList[i][2])
+                    inlet_volt = FLUKE8808A.Fluke_8808A(self.DeviceList[i][0], int(self.DeviceList[i][2]))
                     inlet_volt.configure()
                     devices["inlet_volt"] = inlet_volt
 
                 elif self.DeviceList[i][3] == 3:
-                    out_amm = FLUKE8808A.Fluke_8808A(self.DeviceList[i][0], self.DeviceList[i][2])
+                    out_amm = FLUKE8808A.Fluke_8808A(self.DeviceList[i][0], int(self.DeviceList[i][2]))
                     out_amm.configure()
                     devices["out_amm"] = out_amm
 
                 elif self.DeviceList[i][3] == 4:
-                    out_volt = FLUKE8808A.Fluke_8808A(self.DeviceList[i][0], self.DeviceList[i][2])
+                    out_volt = FLUKE8808A.Fluke_8808A(self.DeviceList[i][0], int(self.DeviceList[i][2]))
                     out_volt.configure()
                     devices["out_volt"] = out_volt
 
             elif "8846A" in self.DeviceList[i][1]:
                 if self.DeviceList[i][3] == 1:
-                    inlet_amm = FLUKE8846A.Fluke_8846A(self.DeviceList[i][0], self.DeviceList[i][2])
+                    inlet_amm = FLUKE8846A.Fluke_8846A(self.DeviceList[i][0], int(self.DeviceList[i][2]))
                     inlet_amm.configure()
                     devices["inlet_amm"] = inlet_amm
 
                 elif self.DeviceList[i][3] == 2:
-                    inlet_volt = FLUKE8846A.Fluke_8846A(self.DeviceList[i][0], self.DeviceList[i][2])
+                    inlet_volt = FLUKE8846A.Fluke_8846A(self.DeviceList[i][0], int(self.DeviceList[i][2]))
                     inlet_volt.configure()
                     devices["inlet_volt"] = inlet_volt
 
                 elif self.DeviceList[i][3] == 3:
-                    out_amm = FLUKE8846A.Fluke_8846A(self.DeviceList[i][0], self.DeviceList[i][2])
+                    out_amm = FLUKE8846A.Fluke_8846A(self.DeviceList[i][0], int(self.DeviceList[i][2]))
                     out_amm.configure()
                     devices["out_amm"] = out_amm
 
                 elif self.DeviceList[i][3] == 4:
-                    out_volt = FLUKE8846A.Fluke_8846A(self.DeviceList[i][0], self.DeviceList[i][2])
+                    out_volt = FLUKE8846A.Fluke_8846A(self.DeviceList[i][0], int(self.DeviceList[i][2]))
                     out_volt.configure()
                     devices["out_volt"] = out_volt
 
@@ -216,39 +219,44 @@ class UiSettings:
         for i in range(self.steps_number):
 
             # Tworzenie plików do badań
-            inlet_amm_path = os.path.join(os.path.join(self.save_path, folder_name), ("inlet_volt" + str(i) + ".txt"))
-            inlet_volt_path = os.path.join(os.path.join(self.save_path, folder_name), ("inlet_volt" + str(i) + ".txt"))
-            out_amm_path = os.path.join(os.path.join(self.save_path, folder_name), ("inlet_volt" + str(i) + ".txt"))
-            out_volt_path = os.path.join(os.path.join(self.save_path, folder_name), ("inlet_volt" + str(i) + ".txt"))
+            #inlet_amm_path = os.path.join(os.path.join(self.save_path, folder_name), ("inlet_volt" + str(i) + ".txt"))
+            #inlet_volt_path = os.path.join(os.path.join(self.save_path, folder_name), ("inlet_volt" + str(i) + ".txt"))
+            #out_amm_path = os.path.join(os.path.join(self.save_path, folder_name), ("inlet_volt" + str(i) + ".txt"))
+            #out_volt_path = os.path.join(os.path.join(self.save_path, folder_name), ("inlet_volt" + str(i) + ".txt"))
 
-            inlet_amm_file = open(inlet_amm_path, 'w')
-            inlet_amm_file.write("Inlet ammeter")
+            inlet_amm_file = open(("inlet_amm" + str(i) + ".txt"), 'w')
+            inlet_amm_file.write("Inlet ammeter: \n")
 
-            inlet_volt_file = open(inlet_volt_path, 'w')
-            inlet_volt_file.write("Inlet ammeter")
+            inlet_volt_file = open(("inlet_volt" + str(i) + ".txt"), 'w')
+            inlet_volt_file.write("Inlet voltmeter: \n")
 
-            out_amm_file = open(out_amm_path, 'w')
-            out_amm_file.write("Inlet ammeter")
+            out_amm_file = open(("out_amm" + str(i) + ".txt"), 'w')
+            out_amm_file.write("Outlet ammeter: \n")
 
-            out_volt_file = open(out_volt_path, 'w')
-            out_volt_file.write("Inlet ammeter")
+            out_volt_file = open(("out_volt" + str(i) + ".txt"), 'w')
+            out_volt_file.write("Outlet voltmeter: \n")
+            print("Stworzono pliki")
 
             # Setting DCLoad
-            if "CC" in self.steps_list[i].dcl_end:
+            if "CC" in self.steps_list[i].dcl_mode:
                 devices["DCload"].set_mode("CURR")
+                print('Krok: '+ str(self.steps_list[i].dcl_start))
                 devices["DCload"].set_current(self.steps_list[i].dcl_start)
-            elif "CV" in self.steps_list[i].dcl_end:
+            elif "CV" in self.steps_list[i].dcl_mode:
                 devices["DCload"].set_mode("VOLT")
                 devices["DCload"].set_voltage(self.steps_list[i].dcl_start)
 
             devices["DCload"].power_on()
 
-            # Setting PSU
-            devices["power_supply"].set_voltage(self.steps_list[i].psu_volt)
-            devices["power_supply"].set_current(self.steps_list[i].psu_amm)
-            devices["power_supply"].output_on()
+            tmpsum = self.steps_list[i].dcl_start
 
-            for j in range(self.steps_list[i].dcl_changes_no):
+            # Setting PSU
+            devices["power_supply"].output_on()
+            devices["power_supply"].set_output_voltage(self.steps_list[i].psu_volt)
+            devices["power_supply"].set_output_current(self.steps_list[i].psu_amm)
+
+
+            for j in range(self.steps_list[i].dcl_changes_no + 1):
 
 
                 """devices["inlet_amm"].start_measure2(self.steps_list[i].dcl_changes_no, inlet_amm_file)
@@ -263,6 +271,19 @@ class UiSettings:
                     devices["out_volt"].start_measure2(self.measurements_per_average, out_volt_file, self.freq)]
 
                 await asyncio.gather(*tasks)
+                inlet_amm_file.flush()
+                inlet_volt_file.flush()
+                out_amm_file.flush()
+                out_volt_file.flush()
+
+                tmpsum += round((self.ui.DCload_end_spb.value() - self.ui.DCload_start_spb.value())/self.ui.DCload_steps_spb.value(), 2)
+
+                if "CC" in self.steps_list[i].dcl_mode:
+                    print('Krok: ' + str(tmpsum))
+                    devices["DCload"].set_current(tmpsum)
+                elif "CV" in self.steps_list[i].dcl_mode:
+                    print('Krok: ' + str(tmpsum))
+                    devices["DCload"].set_voltage(tmpsum)
 
             devices["DCload"].power_off()
             devices["power_supply"].output_off()
@@ -577,9 +598,9 @@ class UiSettings:
         self.steps_list[self.step_no].psu_amm_unit = self.ui.PSU_amp_unit_combo.currentText()
 
         self.steps_list[self.step_no].dcl_mode = self.ui.DCload_mode_combo.currentText()
-        self.steps_list[self.step_no].dcl_end = round(float(self.ui.DCload_end_spb.value()), 4)
-        self.steps_list[self.step_no].dcl_changes_no = round(float(self.ui.DCload_steps_spb.value()), 2)
-        self.steps_list[self.step_no].dcl_start = round(float(self.ui.DCload_start_spb.value()), 4)
+        self.steps_list[self.step_no].dcl_end = round(float(self.ui.DCload_end_spb.value()), 3)
+        self.steps_list[self.step_no].dcl_changes_no = int(self.ui.DCload_steps_spb.value())
+        self.steps_list[self.step_no].dcl_start = round(float(self.ui.DCload_start_spb.value()), 3)
 
         self.steps_list[self.step_no].use_chamber = self.ui.use_temp_chamber_chkbox.isChecked()
         self.steps_list[self.step_no].chamber_mode = self.ui.set_temp_radio.isChecked()
@@ -636,8 +657,8 @@ class UiSettings:
         self.ui.device_model2.addItems(self.list_available_devices[:2])
         self.ui.device_model3.addItems(self.list_available_devices[:2])
         self.ui.device_model4.addItems(self.list_available_devices[:2])
-        self.ui.device_model5.addItem(self.list_available_devices[3])
-        self.ui.device_model6.addItem(self.list_available_devices[2])
+        self.ui.device_model5.addItem(self.list_available_devices[2])
+        self.ui.device_model6.addItem(self.list_available_devices[3])
         # self.ui.device_model7.addItem()
 
     @staticmethod

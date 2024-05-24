@@ -103,7 +103,7 @@ class Fluke_8808A:
             float_number = self.convert_scientific_to_float(sci_number)
             sum += float_number
         time_captured = datetime.datetime.now().strftime("%X.%f")[:-4]
-        string = str(time_captured + " " + str(float(sum/number_of_measurements)))
+        string = str(time_captured + " " + str(float(sum/number_of_measurements)) + '\n')
 
         print(string)
         file.write(string)
@@ -138,4 +138,3 @@ class Fluke_8808A:
         self.instr.write("ADC\n")
         time.sleep(5)
         return 1
-

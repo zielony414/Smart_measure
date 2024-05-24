@@ -13,7 +13,7 @@ class TTI_CPX400DP:
     '''Queries the power supply for its identification string'''
     def it_is(self):
         answer = ""
-        self.instr.clear()
+        #self.instr.clear()
         try:
             answer = self.instr.query("*IDN?")
         except pyvisa.Error as e:

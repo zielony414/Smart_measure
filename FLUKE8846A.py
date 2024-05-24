@@ -82,7 +82,7 @@ class Fluke_8846A:
             float_number = self.convert_scientific_to_float(sci_number)
             sum += float_number
         time_captured = datetime.datetime.now().strftime("%X.%f")[:-4]
-        string = str(time_captured + " " + str(float(sum/number_of_measurements)))
+        string = str(time_captured + " " + str(float(sum/number_of_measurements)) + '\n')
 
         # the average is saved to a file with the date
         print(string)
