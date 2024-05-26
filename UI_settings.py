@@ -117,7 +117,6 @@ class UiSettings:
     async def start_test(self):
         self.ui.state_lbl.setText("Setting devices...")
 
-
         if len(self.DeviceList) < 6:
             sm.Small_window().show_warning("Connect and test devices first!")
             self.ui.state_lbl.setText(" ")
@@ -131,6 +130,8 @@ class UiSettings:
             self.ui.state_lbl.setText("No test name!")
             self.ui.estimated_time_lbl.setText("")
             return
+
+        sm.Small_window().show_info("Attention! Setup and data collection has started. Don't change anything!")
 
         estim_sec = 30
         for j in range(len(self.steps_list)):
@@ -298,6 +299,8 @@ class UiSettings:
             # TODO Czekamy na Ale
             pass
 
+        sm.Small_window().show_info("Data collection completed.")
+        
         if self.ui.delete_txt_chkbox.isChecked():
             shutil.rmtree(folder_name)
 
@@ -745,6 +748,10 @@ class UiSettings:
         # if connection passed with 6 devices function return good list devices
         if check >= 6:
             self.DeviceList = list_models
+            news = sm.Small_window()
+            news.show_info("Devices saved and successfully tested!")
             return 1  # test passed
         else:
+            news = sm.Small_window()
+            news.show_error("Something went wrong! Test again.")
             return 0  # test failed
