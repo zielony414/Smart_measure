@@ -10,6 +10,18 @@
     <height>619</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>804</width>
+    <height>619</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>804</width>
+    <height>619</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>BurySmartMeasure</string>
   </property>
@@ -36,7 +48,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <property name="elideMode">
      <enum>Qt::ElideNone</enum>
@@ -326,7 +338,7 @@
        <number>1</number>
       </property>
       <property name="maximum">
-       <number>15</number>
+       <number>100</number>
       </property>
      </widget>
      <widget class="QLabel" name="timePS_lbl">
@@ -398,16 +410,16 @@
        <string> s</string>
       </property>
       <property name="minimum">
-       <double>0.500000000000000</double>
+       <double>0.250000000000000</double>
       </property>
       <property name="maximum">
        <double>50.000000000000000</double>
       </property>
       <property name="singleStep">
-       <double>0.500000000000000</double>
+       <double>0.250000000000000</double>
       </property>
       <property name="value">
-       <double>1.000000000000000</double>
+       <double>0.500000000000000</double>
       </property>
      </widget>
      <widget class="QLabel" name="freq_lbl">
@@ -1148,9 +1160,9 @@
        </property>
        <property name="geometry">
         <rect>
-         <x>120</x>
+         <x>0</x>
          <y>160</y>
-         <width>241</width>
+         <width>461</width>
          <height>31</height>
         </rect>
        </property>

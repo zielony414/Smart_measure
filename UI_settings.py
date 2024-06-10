@@ -117,6 +117,12 @@ class UiSettings:
     async def start_test(self):
         self.ui.state_lbl.setText("Setting devices...")
 
+        #dezaktywowanie przycisków w trakcie działania
+        self.ui.save_cfg_btn1.setEnabled(0)
+        self.ui.test_connection.setEnabled(0)
+        self.ui.refresh_dev_btn.setEnabled(0)
+        self.ui.start_test_btn.setEnabled(0)
+
         if len(self.DeviceList) < 6:
             sm.Small_window().show_warning("Connect and test devices first!")
             self.ui.state_lbl.setText(" ")
@@ -212,30 +218,36 @@ class UiSettings:
         # Setting outlet voltmeter
         devices["out_volt"].set_DCvolts()
 
+        path = ""
+        if len(self.save_path) > 0:
+            path = self.save_path + '\\'
+
         if not os.path.exists(folder_name):
-            os.mkdir(folder_name)
+            os.mkdir(path + folder_name)
 
         self.ui.state_lbl.setText("Testing...")
+
+    
 
         for i in range(self.steps_number):
 
             # Tworzenie plików do badań
-            #inlet_amm_path = os.path.join(os.path.join(self.save_path, folder_name), ("inlet_volt" + str(i) + ".txt"))
-            #inlet_volt_path = os.path.join(os.path.join(self.save_path, folder_name), ("inlet_volt" + str(i) + ".txt"))
-            #out_amm_path = os.path.join(os.path.join(self.save_path, folder_name), ("inlet_volt" + str(i) + ".txt"))
-            #out_volt_path = os.path.join(os.path.join(self.save_path, folder_name), ("inlet_volt" + str(i) + ".txt"))
+            inlet_amm_path =  path + folder_name +"\inlet_amm" + str(i) + ".txt"
+            inlet_volt_path = path + folder_name +"\inlet_volt" + str(i) + ".txt"
+            out_amm_path = path + folder_name +"\out_amm" + str(i) + ".txt"
+            out_volt_path = path + folder_name +"\out_volt" + str(i) + ".txt"
 
-            inlet_amm_file = open(("inlet_amm" + str(i) + ".txt"), 'w')
-            inlet_amm_file.write("Inlet ammeter: \n")
+            inlet_amm_file = open(inlet_amm_path, 'w')
+            #inlet_amm_file.write("Inlet ammeter: \n")
 
-            inlet_volt_file = open(("inlet_volt" + str(i) + ".txt"), 'w')
-            inlet_volt_file.write("Inlet voltmeter: \n")
+            inlet_volt_file = open(inlet_volt_path, 'w')
+            #inlet_volt_file.write("Inlet voltmeter: \n")
 
-            out_amm_file = open(("out_amm" + str(i) + ".txt"), 'w')
-            out_amm_file.write("Outlet ammeter: \n")
+            out_amm_file = open(out_amm_path, 'w')
+            #out_amm_file.write("Outlet ammeter: \n")
 
-            out_volt_file = open(("out_volt" + str(i) + ".txt"), 'w')
-            out_volt_file.write("Outlet voltmeter: \n")
+            out_volt_file = open(out_volt_path, 'w')
+            #out_volt_file.write("Outlet voltmeter: \n")
             print("Stworzono pliki")
 
             # Setting DCLoad
@@ -299,10 +311,17 @@ class UiSettings:
             # TODO Czekamy na Ale
             pass
 
+        self.ui.save_cfg_btn1.setEnabled(1)
+        self.ui.test_connection.setEnabled(1)
+        self.ui.refresh_dev_btn.setEnabled(1)
+        self.ui.start_test_btn.setEnabled(1)
+
         sm.Small_window().show_info("Data collection completed.")
+
         
         if self.ui.delete_txt_chkbox.isChecked():
-            shutil.rmtree(folder_name)
+            #shutil.rmtree(folder_name)
+            pass
 
     # Switching to next tab
     def next_page(self):
@@ -755,3 +774,4 @@ class UiSettings:
             news = sm.Small_window()
             news.show_error("Something went wrong! Test again.")
             return 0  # test failed
+        

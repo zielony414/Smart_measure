@@ -65,12 +65,12 @@ class TTI_CPX400DP:
     '''The voltage function is the same, but working as intended'''
     def set_output_current(self, current):
         self.instr.write("I1 " + str(current))
-        time.sleep(1)
+        #time.sleep(1)
 
     '''Sets the output voltage'''
     def set_output_voltage(self, voltage):
         self.instr.write("V1 " + str(voltage))
-        time.sleep(1)
+        #time.sleep(1)
 
     '''Reads the output voltage'''
     def read_output_voltage(self):

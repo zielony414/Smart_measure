@@ -4,8 +4,7 @@ from PyQt5 import QtWidgets
 import UI_settings
 from BurySmartMeasure import Ui_BurySmartMeasureClass
 
-
-if __name__ == "__main__":
+def main():
     app = QtWidgets.QApplication(sys.argv)
     BurySmartMeasureClass = QtWidgets.QMainWindow()
     ui = Ui_BurySmartMeasureClass()
@@ -65,3 +64,6 @@ if __name__ == "__main__":
 
     BurySmartMeasureClass.show()
     sys.exit(app.exec_())
+
+if __name__ == "__main__":
+    main()

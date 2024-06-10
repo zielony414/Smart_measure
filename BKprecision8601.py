@@ -24,17 +24,17 @@ class BKprecision8601:
     """Method that sets the intensity"""
     def set_current(self, current):
         self.instr.write("CURR " + str(current) + "\n")  # ustawienie natężenia
-        time.sleep(1)
+        #time.sleep(1)
 
     """A method that sets the power"""
     def set_power(self, power):
         self.instr.write("POW " + str(power) + "\n")
-        time.sleep(1)
+        #time.sleep(1)
 
     """A method that sets the voltage"""
     def set_voltage(self, voltage):
         self.instr.write("VOLT " + str(voltage) + "\n")
-        time.sleep(1)
+        #time.sleep(1)
 
     """A method that reads current voltage and power"""
     def read(self):
