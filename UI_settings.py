@@ -9,6 +9,7 @@ import FLUKE8808A
 import FLUKE8846A
 import TTI_CPX400DP
 import CTS_T6550
+import data
 from PyQt5.QtWidgets import QFileDialog
 
 #TODO dodać informacje o skanowaniu w trakcie dzialania funkcji
@@ -220,7 +221,7 @@ class UiSettings:
 
         path = ""
         if len(self.save_path) > 0:
-            path = self.save_path + '\\'
+            path = self.save_path + '/'
 
         if not os.path.exists(folder_name):
             os.mkdir(path + folder_name)
@@ -307,9 +308,8 @@ class UiSettings:
             out_volt_file.close()
 
         if self.ui.generate_raport_chkbox.isChecked():
-            # Uruchomienie macro excela
-            # TODO Czekamy na Ale
-            pass
+            path1 = path + folder_name
+            data.data_analized(self.steps_number, path1)
 
         self.ui.save_cfg_btn1.setEnabled(1)
         self.ui.test_connection.setEnabled(1)
@@ -320,8 +320,12 @@ class UiSettings:
 
         
         if self.ui.delete_txt_chkbox.isChecked():
-            #shutil.rmtree(folder_name)
-            pass
+            path1 = path + folder_name+'/'
+            for i in range (self.steps_number):
+                os.remove(path1 +'/' + f'inlet_amm{i}.txt')
+                os.remove(path1 +'/' + f'inlet_volt{i}.txt')
+                os.remove(path1 +'/' + f'out_amm{i}.txt')
+                os.remove(path1 +'/' + f'out_volt{i}.txt')
 
     # Switching to next tab
     def next_page(self):

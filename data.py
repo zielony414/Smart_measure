@@ -7,7 +7,7 @@ import os
 import numpy as np
 
 
-def import_data_to_sheet(ws, idx):
+def import_data_to_sheet(ws, idx, path):
     ws.append(['I_in', 'U_in', 'I_out', 'U_out', 'P_in', 'P_out', 'n'])
 
     file_names = [
@@ -18,7 +18,7 @@ def import_data_to_sheet(ws, idx):
     ]
 
     for col_idx, file_name in enumerate(file_names, start=1):
-        with open(file_name, 'r') as file:
+        with open(path+'/' + file_name, 'r') as file:
             lines = file.readlines()
             for row_idx, line in enumerate(lines, start=2):
                 data = line.split()
@@ -46,7 +46,8 @@ def calculate_and_create_chart(ws):
 
     ws.add_chart(chart, "I10")
 
-def data_analysis(steps):
+
+def data_analized(steps, path):
     # Tworzenie nowego pliku Excela
     wb = Workbook()
 
@@ -54,18 +55,17 @@ def data_analysis(steps):
     all_I_in = []
     all_n = []
     all_u_in_means = []
-    steps = 0
 
     for idx in range(steps):
         ws = wb.create_sheet(title=f"Data_Set_{idx}")
-        import_data_to_sheet(ws, idx)
+        import_data_to_sheet(ws, idx, path)
         calculate_and_create_chart(ws)
 
     # Usunięcie domyślnego arkusza
     wb.remove(wb['Sheet'])
 
     # Zapisanie pliku tymczasowego, aby xlwings mógł go otworzyć i przeliczyć formuły
-    temp_filename = 'temp_dane_z_plikow_w_excelu_temp.xlsx'
+    temp_filename = path + 'temp_dane_z_plikow_w_excelu_temp.xlsx'
     wb.save(temp_filename)
 
     # Otwieranie pliku i przeliczanie formuł za pomocą xlwings
@@ -100,7 +100,7 @@ def data_analysis(steps):
     colors = plt.colormaps['tab10']  # Paleta kolorów
 
     plt.figure(figsize=(10, 6))
-    for idx in range(8):
+    for idx in range(steps):
         plt.plot(all_I_in[idx], all_n[idx], label=f'U_in ≈ {round(all_u_in_means[idx])}V', color=colors(idx / 7))
 
     plt.title('Zależność sprawności od I_in dla różnych zestawów danych')
@@ -120,7 +120,7 @@ def data_analysis(steps):
     combined_ws.add_image(img, 'A1')
 
     # Zapisanie zmian do pliku Excela
-    final_filename = 'dane_z_plikow_w_excelu.xlsx'
+    final_filename = path + 'dane_z_plikow_w_excelu.xlsx'
     wb.save(final_filename)
 
     # Usunięcie tymczasowego pliku
