@@ -480,8 +480,8 @@ class UiSettings:
     # Step change
     def step_change(self, number):
         self.step_no = number
-        print("numer kroku: " + str(self.step_no))
-        print("ilosc kroków: " + str(self.steps_number))
+        #print("numer kroku: " + str(self.step_no))
+        #print("ilosc kroków: " + str(self.steps_number))
 
         # Load and display data of selected step
         step = self.steps_list[int(self.step_no)]
